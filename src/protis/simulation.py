@@ -108,8 +108,8 @@ class Simulation:
         self.build_A(pola)
         self.build_B(pola)
         w, v = gen_eig(self.A, self.B)
-        k0 = (w) ** 0.5
-        i = bk.argsort(k0.real)
+        k0 = (1e-16 + w) ** 0.5  # this is to avoid nan gradients
+        i = bk.argsort(bk.real(k0))
         self.eigenvalues = k0[i]
         self.eigenvectors = v[i]
 
