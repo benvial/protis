@@ -43,9 +43,9 @@
 ..    :target: https://codeclimate.com/github/benvial/protis
 ..    :alt: Code Climate maintainability
 
-
-.. image:: https://img.shields.io/badge/DOI-10.5281/zenodo.6174578-dd7d54?logo=google-scholar&logoColor=dd7d54&style=for-the-badge
- :target: https://doi.org/10.5281/zenodo.6174578
+.. 
+.. .. image:: https://img.shields.io/badge/DOI-10.5281/zenodo.6174578-dd7d54?logo=google-scholar&logoColor=dd7d54&style=for-the-badge
+..  :target: https://doi.org/10.5281/zenodo.6174578
 
 
 .. ------------------------------------------------------------------------------------------
