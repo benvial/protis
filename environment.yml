@@ -24,4 +24,5 @@ dependencies:
   - panel
   - pip:
     - autograd-latest
+    - nannos
     - git+https://gitlab.com/protis/protis.git

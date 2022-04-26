@@ -6,15 +6,15 @@ set -e
 mkdir -p ~/.fonts/
 mkdir -p fonts/
 cd fonts
-wget -O Lato.zip https://fonts.google.com/download?family=Lato
-unzip Lato.zip && rm -rf Lato.zip && rm -rf *.txt
-wget -O Cousine.zip https://fonts.google.com/download?family=Cousine
-unzip Cousine.zip && rm -rf Cousine.zip && rm -rf *.txt
-wget -O Barlow.zip https://fonts.google.com/download?family=Barlow
-unzip Barlow.zip && rm -rf Barlow.zip && rm -rf *.txt
+wget -O Cairo.zip https://fonts.google.com/download?family=Cairo
+unzip Cairo.zip && rm -rf Cairo.zip && rm -rf *.txt
+wget -O Rosario.zip https://fonts.google.com/download?family=Rosario
+unzip Rosario.zip && rm -rf Rosario.zip && rm -rf *.txt
+wget -O JetBrainsMono.zip https://fonts.google.com/download?family=JetBrains+Mono
+unzip JetBrainsMono.zip && rm -rf JetBrainsMono.zip && rm -rf *.txt
 mv *.ttf ~/.fonts/
 cd .. && rm -rf fonts
 fc-cache -f -v
-fc-list | grep Lato
-fc-list | grep Cousine
-fc-list | grep Barlow
+fc-list | grep Cairo
+fc-list | grep Rosario
+fc-list | grep JetBrainsMono

@@ -11,7 +11,6 @@ from .__about__ import __author__, __description__, __version__
 from .__about__ import data as _data
 
 
-
 def _reload_package():
 
     import importlib
@@ -40,7 +39,7 @@ del print_info
 del formulations
 del Simulation
 del simulation
-
+del utils
 
 
 def set_backend(backend):
@@ -48,10 +47,12 @@ def set_backend(backend):
     _FORCE_BACKEND = 1
     nannos.set_backend(backend)
     _reload_package()
-    
+
+
 def use_gpu(boolean):
     nannos.use_gpu(boolean)
     _reload_package()
+
 
 _backend_env_var = os.environ.get("PROTIS_BACKEND")
 
@@ -61,4 +62,13 @@ if _backend_env_var in available_backends and _backend_env_var is not None:
         set_backend(_backend_env_var)
 
 
+def print_info():
+    print(f"protis v{__version__}")
+    print("=============")
+    print(__description__)
+    print(f"Author: {__author__}")
+    print(f"Licence: {_data['License']}")
+
+
 from .simulation import *
+from .utils import *

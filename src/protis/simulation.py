@@ -6,10 +6,10 @@
 # See the documentation at protis.gitlab.io
 
 
-
-from . import backend as bk
 from nannos.formulations import fft
 from nannos.utils import is_scalar
+
+from . import backend as bk
 
 
 def is_symmetric(M):
@@ -20,19 +20,20 @@ def is_hermitian(M):
     return bk.allclose(M, bk.conj(M).T)
 
 
-
 def eig(M):
     _eig = bk.linalg.eigh if is_hermitian(M) else bk.linalg.eig
     return _eig(M)
 
+
 def gen_eig(A, B):
-    
-    A = bk.array(A+0j,dtype=bk.complex128)
+
+    A = bk.array(A + 0j, dtype=bk.complex128)
     if is_scalar(B):
-        return eig(A/B)
+        return eig(A / B)
     else:
         Q = bk.linalg.inv(B)
         return eig(Q @ A)
+
 
 class Simulation:
     def __init__(self, lattice, k=(0, 0), epsilon=1, mu=1, nh=100):
@@ -77,30 +78,29 @@ class Simulation:
             return uft[delta[0, :], delta[1, :]]
 
     def build_hat(self, u):
-        return u if is_scalar(u) else self._get_toeplitz_matrix(u) 
-    
+        return u if is_scalar(u) else self._get_toeplitz_matrix(u)
 
     def build_epsilon_hat(self):
         self.epsilon_hat = self.build_hat(self.epsilon)
-    
+
     def build_mu_hat(self):
         self.mu_hat = self.build_hat(self.mu)
 
     def build_A(self, pola):
         def matmuldiag(A, B):
             return bk.einsum("i,ik->ik", bk.array(bk.diag(A)), bk.array(B))
+
         q = self.mu_hat if pola == "TM" else self.epsilon_hat
         if is_scalar(q):
-            self.A = 1/q * self.Kx @ self.Kx + self.Ky @ self.Ky
+            self.A = 1 / q * self.Kx @ self.Kx + self.Ky @ self.Ky
         else:
             u = bk.linalg.inv(q)
             kxu = matmuldiag(self.Kx, u)
             kyu = matmuldiag(self.Ky, u)
             self.A = matmuldiag(self.Kx.T, kxu.T).T + matmuldiag(self.Ky.T, kyu.T).T
 
-    
     def build_B(self, pola):
-        self.B =  self.epsilon_hat if pola == "TM" else self.mu_hat
+        self.B = self.epsilon_hat if pola == "TM" else self.mu_hat
 
     def solve(self, pola):
         self.build_epsilon_hat()

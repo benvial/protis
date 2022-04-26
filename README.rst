@@ -1,5 +1,5 @@
 
-.. image:: https://img.shields.io/badge/dynamic/json.svg?label=release&url=https://gitlab.com/protis/protis/-/jobs/artifacts/master/file/badges.json?job=badge&query=release_tag&color=1672a7&labelColor=dedede&style=for-the-badge&logo=data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgd2lkdGg9IjQwbW0iCiAgIGhlaWdodD0iNDBtbSIKICAgdmlld0JveD0iMCAwIDQwIDQwIgogICB2ZXJzaW9uPSIxLjEiCiAgIGlkPSJzdmc4IgogICBpbmtzY2FwZTp2ZXJzaW9uPSIxLjEgKGM0ZThmOWVkNzQsIDIwMjEtMDUtMjQpIgogICBzb2RpcG9kaTpkb2NuYW1lPSJuYW5uLnN2ZyIKICAgaW5rc2NhcGU6ZXhwb3J0LWZpbGVuYW1lPSIvaG9tZS9iZW5jaC9kZXYvbmFubi9kb2MvYXNzZXRzL25hbm4ucG5nIgogICBpbmtzY2FwZTpleHBvcnQteGRwaT0iNjAwIgogICBpbmtzY2FwZTpleHBvcnQteWRwaT0iNjAwIgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIKICAgeG1sbnM6Y2M9Imh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL25zIyIKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIj4KICA8ZGVmcwogICAgIGlkPSJkZWZzMiIgLz4KICA8c29kaXBvZGk6bmFtZWR2aWV3CiAgICAgaWQ9ImJhc2UiCiAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIgogICAgIGJvcmRlcmNvbG9yPSIjNjY2NjY2IgogICAgIGJvcmRlcm9wYWNpdHk9IjEuMCIKICAgICBpbmtzY2FwZTpwYWdlb3BhY2l0eT0iMC4wIgogICAgIGlua3NjYXBlOnBhZ2VzaGFkb3c9IjIiCiAgICAgaW5rc2NhcGU6em9vbT0iNC4wNDUwNjcxIgogICAgIGlua3NjYXBlOmN4PSI0OS45MzczNjciCiAgICAgaW5rc2NhcGU6Y3k9Ijk5LjEzMzA5IgogICAgIGlua3NjYXBlOmRvY3VtZW50LXVuaXRzPSJtbSIKICAgICBpbmtzY2FwZTpjdXJyZW50LWxheWVyPSJsYXllcjEiCiAgICAgaW5rc2NhcGU6ZG9jdW1lbnQtcm90YXRpb249IjAiCiAgICAgc2hvd2dyaWQ9ImZhbHNlIgogICAgIGlua3NjYXBlOndpbmRvdy13aWR0aD0iMTkyMCIKICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSIxMDgwIgogICAgIGlua3NjYXBlOndpbmRvdy14PSIwIgogICAgIGlua3NjYXBlOndpbmRvdy15PSIwIgogICAgIGlua3NjYXBlOndpbmRvdy1tYXhpbWl6ZWQ9IjEiCiAgICAgaW5rc2NhcGU6cGFnZWNoZWNrZXJib2FyZD0iMCIgLz4KICA8bWV0YWRhdGEKICAgICBpZD0ibWV0YWRhdGE1Ij4KICAgIDxyZGY6UkRGPgogICAgICA8Y2M6V29yawogICAgICAgICByZGY6YWJvdXQ9IiI+CiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CiAgICAgICAgPGRjOnR5cGUKICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPgogICAgICAgIDxkYzp0aXRsZSAvPgogICAgICA8L2NjOldvcms+CiAgICA8L3JkZjpSREY+CiAgPC9tZXRhZGF0YT4KICA8ZwogICAgIGlua3NjYXBlOmxhYmVsPSJMYXllciAxIgogICAgIGlua3NjYXBlOmdyb3VwbW9kZT0ibGF5ZXIiCiAgICAgaWQ9ImxheWVyMSIKICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNDMuNTgwMjg1LC0zNC40ODU1MDgpIj4KICAgIDxwYXRoCiAgICAgICBpZD0icmVjdDkzNCIKICAgICAgIHN0eWxlPSJmaWxsOiMxNjcyYTc7c3Ryb2tlOiM5YjM2MDA7c3Ryb2tlLXdpZHRoOjA7ZmlsbC1vcGFjaXR5OjEiCiAgICAgICBkPSJNIDYzLjY4MjQxNywzNi4yMDYyNDMgNTIuNDg5MzAyLDQ3LjM5OTM1OCB2IDE3LjU1MzQ1MSBsIDUuNzY0NTA2LDUuNzY0NTA2IHYgLTE5LjU3NTU1IGggMTAuNzU3OTk5IHYgMTkuNjc0NzY5IGwgNS42NzIwMDUsLTUuNjcyMDA1IHYgLTE3LjkzNjg5IHogbSAxNS4wMDI3MDIsMTUuMDAyNzAyIHYgOS45MzQyNzcgbCA0Ljk2NzEzNywtNC45NjcxMzkgeiBtIC0zMC4xOTcxMjMsMC4xOTE3MTkgLTQuNzc1NDE5LDQuNzc1NDE5IDQuNzc1NDE5LDQuNzc1NDIgeiIgLz4KICA8L2c+Cjwvc3ZnPgo=
+.. image:: https://img.shields.io/badge/dynamic/json.svg?label=release&url=https://gitlab.com/protis/protis/-/jobs/artifacts/master/file/badges.json?job=badge&query=release_tag&color=1672a7&labelColor=dedede&style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDBtbSIgaGVpZ2h0PSI0MG1tIiB2aWV3Qm94PSIwIDAgNDAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTIwLjE5MS40NjEgOC42OTggMTEuOTU0djE2LjE3NWwxMS40OTMgMTEuNDkzIDMuMjkzLTMuMjkyVjIyLjcyNmgxMy42MDNsMi42ODQtMi42ODRMMjAuMTkxLjQ2MnptLS4zOCA3Ljk0IDYuNSA2LjUtNi41IDYuNS02LjUtNi41IDYuNS02LjV6TTUuNzQ3IDE0LjkwNS42MSAyMC4wNDFsNS4xMzcgNS4xMzhWMTQuOTA0eiIgZmlsbD0iIzhjNGFiMCIvPjwvc3ZnPg==
   :target: https://gitlab.com/protis/protis/-/releases
   :alt: Release
 
@@ -7,11 +7,11 @@
 .. image:: https://img.shields.io/gitlab/pipeline/protis/protis/master?logo=gitlab&labelColor=dedede&logoColor=ffffff&style=for-the-badge
   :target: https://gitlab.com/protis/protis/commits/master
   :alt: pipeline status
-   
-   
+
+
 .. image:: https://img.shields.io/gitlab/coverage/protis/protis/master?logo=python&logoColor=e9d672&style=for-the-badge
  :target: https://gitlab.com/protis/protis/commits/master
- :alt: coverage report 
+ :alt: coverage report
 
 
 .. image:: https://img.shields.io/badge/code%20style-black-dedede.svg?logo=python&logoColor=e9d672&style=for-the-badge
@@ -20,26 +20,26 @@
 
 .. image:: https://img.shields.io/badge/license-GPLv3-blue?color=dd7d54&logo=open-access&logoColor=dd7d54&style=for-the-badge
   :target: https://gitlab.com/protis/protis/-/blob/master/LICENCE.txt
-  :alt: license 
-  
-  
+  :alt: license
+
+
 
 ----------------------
 
-.. image:: https://img.shields.io/pypi/v/protis?color=blue&logo=pypi&logoColor=e9d672&style=for-the-badge   
+.. image:: https://img.shields.io/pypi/v/protis?color=blue&logo=pypi&logoColor=e9d672&style=for-the-badge
   :target: https://pypi.org/project/protis/
   :alt: PyPI
 
 
-.. image:: https://img.shields.io/pypi/dm/protis?logo=pypi&logoColor=e9d672&style=for-the-badge   
+.. image:: https://img.shields.io/pypi/dm/protis?logo=pypi&logoColor=e9d672&style=for-the-badge
   :alt: PyPI - Downloads
 
 
-.. image:: https://img.shields.io/pypi/status/protis?logo=pypi&logoColor=e9d672&style=for-the-badge   
+.. image:: https://img.shields.io/pypi/status/protis?logo=pypi&logoColor=e9d672&style=for-the-badge
   :alt: PyPI - Status
 
 
-.. .. image:: https://img.shields.io/codeclimate/maintainability/benvial/protis?logo=code-climate&style=for-the-badge   
+.. .. image:: https://img.shields.io/codeclimate/maintainability/benvial/protis?logo=code-climate&style=for-the-badge
 ..    :target: https://codeclimate.com/github/benvial/protis
 ..    :alt: Code Climate maintainability
 
@@ -49,15 +49,15 @@
 
 
 .. ------------------------------------------------------------------------------------------
-.. 
-.. 
-.. .. image:: https://img.shields.io/conda/vn/conda-forge/protis?logo=conda-forge&color=CD5C5C&logoColor=white&style=for-the-badge   
+..
+..
+.. .. image:: https://img.shields.io/conda/vn/conda-forge/protis?logo=conda-forge&color=CD5C5C&logoColor=white&style=for-the-badge
 ..    :target: https://anaconda.org/conda-forge/protis
 ..    :alt: Conda (channel only)
-.. 
+..
 .. .. image:: https://img.shields.io/conda/dn/conda-forge/protis?logo=conda-forge&logoColor=white&style=for-the-badge
 ..    :alt: Conda
-.. 
+..
 .. .. image:: https://img.shields.io/conda/pn/conda-forge/protis?logo=conda-forge&logoColor=white&style=for-the-badge
 ..    :alt: Conda
 
@@ -79,7 +79,7 @@ Installation
 From pypi
 ---------
 
-The package is available on `pypi <https://pypi.org/project/protis>`_. 
+The package is available on `pypi <https://pypi.org/project/protis>`_.
 To install, simply use:
 
 .. code-block:: bash
@@ -90,7 +90,7 @@ To install, simply use:
 From sources
 -------------
 
-Sources are available on `gitlab <https://gitlab.com/protis/protis>`_. First 
+Sources are available on `gitlab <https://gitlab.com/protis/protis>`_. First
 clone the repository and install with ``pip``:
 
 .. code-block:: bash
@@ -98,7 +98,7 @@ clone the repository and install with ``pip``:
   git clone https://gitlab.com/protis/protis.git
   cd protis
   pip install -e .
-    
+
 
 .. inclusion-marker-install-end
 
@@ -106,7 +106,7 @@ clone the repository and install with ``pip``:
 Documentation
 =============
 
-The reference documentation and examples can be found on the  
+The reference documentation and examples can be found on the
 `project website <https://protis.gitlab.io>`_.
 
 

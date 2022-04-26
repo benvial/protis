@@ -17,8 +17,8 @@ VERSION=$(shell python3 -c "from configparser import ConfigParser; p = ConfigPar
 BRANCH=$(shell git branch --show-current)
 URL=$(shell python3 -c "import protis; print(protis.__website__)")
 LESSC=$(PROJECT_DIR)/doc/node_modules/less/bin/lessc
-GITLAB_PROJECT_ID=28703132
-GITLAB_GROUP_ID=12956132
+GITLAB_PROJECT_ID=35660637
+GITLAB_GROUP_ID=52441206
 
 ifeq (,$(shell which conda))
 HAS_CONDA=False
@@ -34,7 +34,7 @@ endif
 
 message = @make -s printmessage RULE=${1}
 
-printmessage: 
+printmessage:
 	@sed -n -e "/^## / { \
 		h; \
 		s/.*//; \
@@ -69,7 +69,7 @@ printmessage:
 		} \
 		printf "%s ", col_off; \
 		printf "\n"; \
-	}' 
+	}'
 
 #################################################################################
 # COMMANDS                                                                      #
@@ -108,13 +108,13 @@ req:
 ## Install Python dependencies for dev and test
 dev:
 	@$(PYTHON_INTERPRETER) -m pip install -r dev/requirements.txt
-	
+
 ## Clean generated files
 cleangen:
 	$(call message,${@})
 	@find . -not -path "./test/data/*" | grep -E "(__pycache__|\.pyc|\.ipynb_checkpoints|\.pyo$\)" | xargs rm -rf
 	@rm -rf .pytest_cache  build/ dist/ tmp/ htmlcov/ #src/protis.egg-info/
-	
+
 ## Clean documentation
 cleandoc:
 	$(call message,${@})
@@ -174,7 +174,7 @@ gl:
 	@read -p "Enter commit message: " MSG; \
 	git commit -a -m "$$MSG"
 	@git push origin $(BRANCH)
-	
+
 
 ## Show gitlab repository
 repo:
@@ -185,7 +185,7 @@ repo:
 ## Clean, reformat and push to gitlab
 save: style gl
 	$(call message,${@})
-	
+
 
 ## Push to gitlab (skipping continuous integration)
 gl-noci:
@@ -194,13 +194,13 @@ gl-noci:
 	@read -p "Enter commit message: " MSG; \
 	git commit -a -m "$$MSG [skip ci]"
 	@git push origin $(BRANCH)
-	
-	
+
+
 
 ## Clean, reformat and push to gitlab (skipping continuous integration)
 save-noci: style gl-noci
 	$(call message,${@})
-	
+
 
 
 ## Make documentation css
@@ -215,7 +215,7 @@ watch-less:
 	$(call message,${@})
 	while inotifywait -e close_write ./doc/_custom/static/css/less/*.less; do make -s less; done
 
-	
+
 ## Install requirements for building documentation
 doc-req:
 	$(call message,${@})
@@ -237,17 +237,17 @@ doc-noplot: less
 show-doc:
 	$(call message,${@})
 	@cd doc && make -s show
-	
+
 ## Show locally built pdf documentation
 show-pdf:
 	$(call message,${@})
 	@cd doc && make -s show-pdf
-	
+
 ## Build pdf documentation (only updated examples)
 pdf:
 	$(call message,${@})
 	@cd doc && make -s latexpdf
-	
+
 ## Build pdf documentation (without examples)
 pdf-noplot:
 	$(call message,${@})
@@ -258,7 +258,7 @@ cleantest:
 	$(call message,${@})
 	@rm -rf .coverage* htmlcov coverage.xml
 
-	
+
 ## Install requirements for testing
 test-req:
 	$(call message,${@})
@@ -267,12 +267,12 @@ test-req:
 
 
 define runtest
-		@echo 
+		@echo
 		@echo "-----------------------------------------------------------------------------"
 		@echo "-----------------------    testing $(1) backend    --------------------------"
 		@echo "-----------------------------------------------------------------------------"
-		@echo 
-		@export MPLBACKEND=agg && export protis_BACKEND=$(1) && \
+		@echo
+		@export MPLBACKEND=agg && export PROTIS_BACKEND=$(1) && \
 		pytest ./test/basic \
 		--cov=src/$(PROJECT_NAME) --cov-append --cov-report term \
 		--durations=0 $(TEST_ARGS)
@@ -294,13 +294,13 @@ test-scipy:
 test-autograd:
 	$(call message,${@})
 	$(call	runtest,autograd)
-	
+
 
 ## Run the test suite with jax backend only
 test-jax:
 	$(call message,${@})
 	$(call	runtest,jax)
-	
+
 
 ## Run the test suite with torch backend only
 test-torch:
@@ -314,55 +314,55 @@ test-allbk: test-numpy test-scipy test-autograd test-jax test-torch
 ## Run the commmon tests
 test-common:
 	$(call message,${@})
-	@export MPLBACKEND=agg && export protis_BACKEND=numpy && pytest ./test/common \
+	@export MPLBACKEND=agg && export PROTIS_BACKEND=numpy && pytest ./test/common \
 	--cov=src/$(PROJECT_NAME) --cov-append --cov-report term \
 	--cov-report html --cov-report xml --durations=0 $(TEST_ARGS)
 
 ## Run the test suite
 test: cleantest test-allbk test-common
 	$(call message,${@})
-	
-	
+
+
 ## Run the test suite (parallel)
 testpara: cleantest
 	$(call message,${@})
 	@export OMP_NUM_THREADS=1 && make -s test TEST_PARALLEL=1
-	
+
 ## Copy the coverage html into documentation
 covdoc:
 	$(call message,${@})
 	@ls doc/_build/html/ || make doc
 	@ls htmlcov/ || make -s test && mv htmlcov/ doc/_build/html/coverage/
-	
+
 ## Install locally
 install:
 	$(call message,${@})
 	pip install -e .
-	
-	
+
+
 ## Tag and push tags
 tag: clean style
 	$(call message,${@})
-	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" != "master" ]; then exit 1; fi
+	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" != "main" ]; then exit 1; fi
 	@echo "Version v$(VERSION)"
 	@git add -A
 	git commit -a -m "Publish v$(VERSION)"
 	@git push origin $(BRANCH)
 	@git tag v$(VERSION) || echo Ignoring tag since it already exists
 	@git push --tags || echo Ignoring tag since it already exists on the remote
-	
+
 ## Create a release
 release:
 	$(call message,${@})
-	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" != "master" ]; then exit 1; fi
+	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" != "main" ]; then exit 1; fi
 	@gitlab project-release create --project-id $(GITLAB_PROJECT_ID) \
 	--name "version $(VERSION)" --tag-name "v$(VERSION)" --description "Released version $(VERSION)"
-                                     
+
 
 ## Create python package
 package:
 	$(call message,${@})
-	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" != "master" ]; then exit 1; fi
+	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" != "main" ]; then exit 1; fi
 	@rm -f dist/*
 	@python3 -m build --sdist --wheel .
 
@@ -389,7 +389,15 @@ conda: checksum
 publish: tag release pypi conda
 	$(call message,${@})
 
-	
+
+
+
+## Update header text
+header:
+	$(call message,${@})
+	@cd dev && python update_header.py
+
+
 #################################################################################
 # Self Documenting Commands                                                     #
 #################################################################################

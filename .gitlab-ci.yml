@@ -42,7 +42,7 @@ badge:
     - latest_release_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
     - logo=$(cat ./doc/_assets/opt.svg | tr '"' "'")
     - echo {\"schemaVersion\":"1", \"commits\":\"$commits\", \"release_tag\":\"$latest_release_tag\"} > badges.json
-    - echo {\"schemaVersion\":"1", \"logoSvg\":\"$logo\", \"label\":\"release\", \"message\":\"$latest_release_tag\", \"color\":\"1672a7\", \"labelColor\":\"dedede\", \"style\":\"for-the-badge\"} > logobadge.json
+    - echo {\"schemaVersion\":"1", \"logoSvg\":\"$logo\", \"label\":\"release\", \"message\":\"$latest_release_tag\", \"color\":\"8c4ab0\", \"labelColor\":\"dedede\", \"style\":\"for-the-badge\"} > logobadge.json
   artifacts:
     paths:
         - badges.json
@@ -51,7 +51,7 @@ badge:
 staging:
   trigger: protis/protis.gitlab.io
   only:
-    - master
+    - main
 
 
 test:
@@ -64,7 +64,7 @@ test:
     reports:
       cobertura: coverage.xml
   only:
-    - master
+    - main
 
 send-snapshot:
   script:

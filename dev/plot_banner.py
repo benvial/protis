@@ -26,7 +26,7 @@ lattice = pt.Lattice([[1.0, 0], [0, 1.0]], discretization=(2**9, 2**9))
 epsilon = lattice.ones() * 1
 circ = lattice.circle(center=(0.5, 0.5), radius=0.2)
 epsilon[circ] = 8.9
-sim = pt.Simulation(lattice, k=(0,0), epsilon=epsilon,nh=33)
+sim = pt.Simulation(lattice, k=(0, 0), epsilon=epsilon, nh=33)
 sim.build_epsilon_hat()
 M = sim.epsilon_hat
 

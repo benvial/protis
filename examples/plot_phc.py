@@ -14,11 +14,10 @@ Calculation of the band diagram of a two-dimensional photonic crystal.
 """
 
 
-
 import matplotlib.pyplot as plt
 import numpy as np
-import protis as pt
 
+import protis as pt
 
 ##############################################################################
 # Reference results are taken from  :cite:p:`Joannopoulos2008` (Chapter 5 Fig. 2).
@@ -62,15 +61,13 @@ for polarization in ["TE", "TM"]:
     ev_band = []
     q = 0
     for kx, ky in bands:
-        sim = pt.Simulation(lattice, (kx, ky), epsilon=epsilon,mu=1, nh=100)
+        sim = pt.Simulation(lattice, (kx, ky), epsilon=epsilon, mu=1, nh=100)
         a = sim.lattice.basis_vectors[0][0]
         neig = 6
         k0, v = sim.solve(polarization)
         ev_norma = k0[:neig] * a / (2 * np.pi)
         # plt.plot(q*np.ones(neig),ev_norma,"ob")
         ev_band.append(ev_norma)
-        
-        
 
         q += (kx**2 + ky**2) ** 0.5
         plt.pause(0.1)
@@ -85,8 +82,8 @@ bands_plot[Nb : 2 * Nb - 1] = K[-1] + K[1:]
 bands_plot[2 * Nb - 1 : 3 * Nb - 2] = 2 * K[-1] + 2**0.5 * K[1:]
 
 
-BD["TM"] = pt.backend.stack( BD["TM"]).real
-BD["TE"] = pt.backend.stack( BD["TE"]).real
+BD["TM"] = pt.backend.stack(BD["TM"]).real
+BD["TE"] = pt.backend.stack(BD["TE"]).real
 
 
 ##############################################################################
