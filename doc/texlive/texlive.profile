@@ -1,0 +1,10 @@
+selected_scheme scheme-basic
+TEXDIR /root/texlive
+TEXMFCONFIG ~/.texlive/texmf-config
+TEXMFHOME ~/texmf
+TEXMFLOCAL /root/texlive/texmf-local
+TEXMFSYSCONFIG /root/texlive/texmf-config
+TEXMFSYSVAR /root/texlive/texmf-var
+TEXMFVAR ~/.texlive/texmf-var
+option_doc 0
+option_src 0

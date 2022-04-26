@@ -1,0 +1,13 @@
+pip 
+setuptools 
+wheel
+build
+flake8
+black
+twine
+isort
+radon
+pydocstyle
+pylint
+pylint-json2html
+python-gitlab

@@ -1,0 +1,27 @@
+name: protis
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.9
+  - pip
+  - numpy
+  - scipy
+  - matplotlib-base
+  - shapely
+  - joblib
+  - colorlog
+  - psutil
+  - ipython
+  - nlopt
+  - matplotlib-base
+  - pytorch
+  - magma
+  - cudatoolkit=10.2
+  - pyvista
+  - pythreejs
+  - ipyvtklink
+  - panel
+  - pip:
+    - autograd-latest
+    - git+https://gitlab.com/protis/protis.git

@@ -1,0 +1,36 @@
+
+<a href="#" id="return-to-top"><i class="fas fa-chevron-up"></i></a>
+
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      {%- if show_pip_install %}
+      <div class="col-md-6">
+        <div class="foot-fa">
+          <a href=https://gitlab.com/{{repo}} target="_blank">
+            <i class="fab fa-gitlab fa-1x"></i>
+          </a>
+          <a href=https://pypi.org/project/{{pipname}} target="_blank">
+            <i class="fab fa-python"></i>
+          </a>
+          <!-- <a href=https://hub.docker.com/repository/docker/{{dockername}} target="_blank">
+            <i class="fab fa-docker"></i>
+          </a> -->
+        </div>
+      </div>
+      {%- endif %}
+      {%- if show_fork %}
+      <div class="col-md-6">
+
+        <div class="footer-copyright">
+          
+          <img src={{ pathto('_assets/protis-name-white.svg', 1) }} alt="gyptis">
+          <p>v{{version}} | 
+          {% trans copyright=copyright|e %}&copy;{{ copyright }}{% endtrans %}</p>
+        </div>
+      </div>
+      {%- endif %}
+
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="213mm"
+   height="60mm"
+   viewBox="0 0 213 60"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04, custom)"
+   sodipodi:docname="protis-name-white.svg"
+   inkscape:export-filename="/home/bench/dev/nannnos/protis/doc/_assets/protis-name.png"
+   inkscape:export-xdpi="600"
+   inkscape:export-ydpi="600"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs2">
+    <rect
+       x="90.860382"
+       y="37.028122"
+       width="130.50626"
+       height="43.309494"
+       id="rect834" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.0071424"
+     inkscape:cx="399.14912"
+     inkscape:cy="179.21994"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1080"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="0"
+     width="197mm" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-43.580285,-34.485508)">
+    <text
+       xml:space="preserve"
+       id="text832"
+       style="font-size:7.05556px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect834);fill:#ffffff;fill-opacity:0.996078"
+       transform="matrix(1.352649,0,0,1.352649,-10.473019,-8.4570029)"><tspan
+         x="90.861328"
+         y="63.072001"
+         id="tspan7799"><tspan
+           style="font-weight:bold;font-size:31.75px;font-family:Cairo;-inkscape-font-specification:'Cairo Bold'"
+           id="tspan7797">PROTIS</tspan></tspan></text>
+    <path
+       d="M 76.960306,37.182988 60.873174,53.410185 V 76.247993 L 76.960306,92.47519 81.569627,87.827149 V 68.619388 H 100.61015 L 104.36703,64.829795 76.960306,37.1844 Z m -0.531899,11.210645 9.098265,9.177481 -9.098265,9.17748 -9.098264,-9.17748 z m -19.685845,9.183129 -7.190428,7.251621 7.190428,7.254445 V 57.57535 Z"
+       fill="#8c4ab0"
+       id="path916"
+       style="stroke-width:1.40581;fill:#ffffff" />
+  </g>
+</svg>
