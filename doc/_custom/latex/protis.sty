@@ -1,6 +1,6 @@
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{protis}[2021/04/21 protis documentation]
+\ProvidesClass{protis}[2022/04/26 protis documentation]
 
 
 \providecommand{\subtitle}{Subtitle}
@@ -21,9 +21,9 @@
 
 % Font
 \RequirePackage{fontspec}
-\setmainfont[Ligatures=TeX,Scale=1]{Barlow}
-\setsansfont[Ligatures=TeX,Scale=1]{Lato-Light}
-\setmonofont[Ligatures=TeX,Scale=0.9]{Cousine}
+\setmainfont[Ligatures=TeX,Scale=1]{Cairo}
+\setsansfont[Ligatures=TeX,Scale=1]{Rosario}
+\setmonofont[Ligatures=TeX,Scale=0.9]{JetBrains Mono}
 % \newcommand{HeaderFamily}{Nunito Sans}
 
 \definecolor{protisprimary}{HTML}{8c4ab0}
@@ -47,13 +47,13 @@
 % @brand-warning: rgb(193, 172, 129);
 
 % InnerLinkColor
-% 
+%
 % OuterLinkColor
-% 
+%
 % VerbatimColor
-% 
+%
 % VerbatimBorderColor
-% 
+%
 % VerbatimHighlightColor
 
 \titleformat{\chapter}{\Huge\color{protisprimary}}{\thechapter.\ }
@@ -85,7 +85,7 @@
  \renewcommand{\headrulewidth}{0pt}
  \renewcommand{\footrulewidth}{0.4pt}
  }
- 
+
 \renewcommand{\headrule}{\hbox to\headwidth{%
   \color{protislightgray}\leaders\hrule height \headrulewidth\hfill}}
 \renewcommand{\footrule}{\hbox to\headwidth{%
@@ -107,7 +107,7 @@
       \begin{flushright}%
         \sphinxlogo
         \py@HeaderFamily
-        
+
         \vfill\vfill
         {\Huge \@title \par}
         {\color{protislightgray}\itshape\LARGE \py@release\releaseinfo \par}

@@ -7,12 +7,11 @@ mkdir -p ~/.fonts/
 mkdir -p fonts/
 cd fonts
 wget -O Cairo.zip https://fonts.google.com/download?family=Cairo
-unzip Cairo.zip && rm -rf Cairo.zip && rm -rf *.txt
+unzip Cairo.zip && rm -rf Cairo.zip && rm -rf *.txt && mv static/*.ttf ~/.fonts/
 wget -O Rosario.zip https://fonts.google.com/download?family=Rosario
-unzip Rosario.zip && rm -rf Rosario.zip && rm -rf *.txt
+unzip Rosario.zip && rm -rf Rosario.zip && rm -rf *.txt && mv static/*.ttf ~/.fonts/
 wget -O JetBrainsMono.zip https://fonts.google.com/download?family=JetBrains+Mono
-unzip JetBrainsMono.zip && rm -rf JetBrainsMono.zip && rm -rf *.txt
-mv *.ttf ~/.fonts/
+unzip JetBrainsMono.zip && rm -rf JetBrainsMono.zip && rm -rf *.txt && mv static/*.ttf ~/.fonts/
 cd .. && rm -rf fonts
 fc-cache -f -v
 fc-list | grep Cairo

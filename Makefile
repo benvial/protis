@@ -386,10 +386,8 @@ conda: checksum
 
 
 ## Publish release on pypi and conda-forge
-publish: tag release pypi conda
+publish: tag release pypi
 	$(call message,${@})
-
-
 
 
 ## Update header text

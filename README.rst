@@ -1,16 +1,16 @@
 
-.. image:: https://img.shields.io/badge/dynamic/json.svg?label=release&url=https://gitlab.com/protis/protis/-/jobs/artifacts/master/file/badges.json?job=badge&query=release_tag&color=1672a7&labelColor=dedede&style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDBtbSIgaGVpZ2h0PSI0MG1tIiB2aWV3Qm94PSIwIDAgNDAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTIwLjE5MS40NjEgOC42OTggMTEuOTU0djE2LjE3NWwxMS40OTMgMTEuNDkzIDMuMjkzLTMuMjkyVjIyLjcyNmgxMy42MDNsMi42ODQtMi42ODRMMjAuMTkxLjQ2MnptLS4zOCA3Ljk0IDYuNSA2LjUtNi41IDYuNS02LjUtNi41IDYuNS02LjV6TTUuNzQ3IDE0LjkwNS42MSAyMC4wNDFsNS4xMzcgNS4xMzhWMTQuOTA0eiIgZmlsbD0iIzhjNGFiMCIvPjwvc3ZnPg==
+.. image:: https://img.shields.io/badge/dynamic/json.svg?label=release&url=https://gitlab.com/protis/protis/-/jobs/artifacts/main/file/badges.json?job=badge&query=release_tag&color=8c4ab0&labelColor=dedede&style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDBtbSIgaGVpZ2h0PSI0MG1tIiB2aWV3Qm94PSIwIDAgNDAgNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTIwLjE5MS40NjEgOC42OTggMTEuOTU0djE2LjE3NWwxMS40OTMgMTEuNDkzIDMuMjkzLTMuMjkyVjIyLjcyNmgxMy42MDNsMi42ODQtMi42ODRMMjAuMTkxLjQ2MnptLS4zOCA3Ljk0IDYuNSA2LjUtNi41IDYuNS02LjUtNi41IDYuNS02LjV6TTUuNzQ3IDE0LjkwNS42MSAyMC4wNDFsNS4xMzcgNS4xMzhWMTQuOTA0eiIgZmlsbD0iIzhjNGFiMCIvPjwvc3ZnPg==
   :target: https://gitlab.com/protis/protis/-/releases
   :alt: Release
 
 
-.. image:: https://img.shields.io/gitlab/pipeline/protis/protis/master?logo=gitlab&labelColor=dedede&logoColor=ffffff&style=for-the-badge
-  :target: https://gitlab.com/protis/protis/commits/master
+.. image:: https://img.shields.io/gitlab/pipeline/protis/protis/main?logo=gitlab&labelColor=dedede&logoColor=ffffff&style=for-the-badge
+  :target: https://gitlab.com/protis/protis/commits/main
   :alt: pipeline status
 
 
-.. image:: https://img.shields.io/gitlab/coverage/protis/protis/master?logo=python&logoColor=e9d672&style=for-the-badge
- :target: https://gitlab.com/protis/protis/commits/master
+.. image:: https://img.shields.io/gitlab/coverage/protis/protis/main?logo=python&logoColor=e9d672&style=for-the-badge
+ :target: https://gitlab.com/protis/protis/commits/main
  :alt: coverage report
 
 
@@ -19,7 +19,7 @@
 
 
 .. image:: https://img.shields.io/badge/license-GPLv3-blue?color=dd7d54&logo=open-access&logoColor=dd7d54&style=for-the-badge
-  :target: https://gitlab.com/protis/protis/-/blob/master/LICENCE.txt
+  :target: https://gitlab.com/protis/protis/-/blob/main/LICENCE.txt
   :alt: license
 
 
@@ -43,7 +43,7 @@
 ..    :target: https://codeclimate.com/github/benvial/protis
 ..    :alt: Code Climate maintainability
 
-.. 
+..
 .. .. image:: https://img.shields.io/badge/DOI-10.5281/zenodo.6174578-dd7d54?logo=google-scholar&logoColor=dd7d54&style=for-the-badge
 ..  :target: https://doi.org/10.5281/zenodo.6174578
 
