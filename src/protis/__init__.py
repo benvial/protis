@@ -31,8 +31,6 @@ if _nannos_env_var is not None:
 import nannos
 from nannos import *
 
-nannos.set_log_level("DEBUG")
-
 del PlaneWave
 del excitation
 del print_info

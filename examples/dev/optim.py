@@ -11,6 +11,7 @@ plt.close("all")
 
 
 backend = "autograd"
+backend = "torch"
 pt.set_backend(backend)
 
 bk = pt.backend
@@ -18,11 +19,12 @@ no = pt.optimize
 
 
 a = 1
-nh = 100
 lattice = pt.Lattice([[a, 0], [0, a]], discretization=2**7)
 
 
-eps_min, eps_max = 1, 5
+eps_min, eps_max = 1, 8.9
+
+ieig = 4
 
 
 def simu(x, proj_level=None, rfilt=0):
@@ -32,12 +34,12 @@ def simu(x, proj_level=None, rfilt=0):
         no.project(density_f, proj_level) if proj_level is not None else density_f
     )
     epsilon = no.simp(density_fp, eps_min, eps_max, p=1)
-    polarization = "TE"
+    polarization = "TM"
     kx, ky = 0, 0
     sim = pt.Simulation(lattice, (kx, ky), epsilon=epsilon, mu=1, nh=100)
     a = sim.lattice.basis_vectors[0][0]
-    ieig = 5
-    k0, v = sim.solve(polarization)
+
+    k0, w = sim.solve(polarization, vectors=True)
     ev_norma = bk.real(k0[ieig + 1] - k0[ieig])
     return -ev_norma
 
@@ -47,9 +49,12 @@ nvar = lattice.discretization[0] * lattice.discretization[1]
 x0 = lattice.ones() * 1
 hole = lattice.circle(center=(0.5, 0.5), radius=0.2)
 x0[hole] = 0
+
+
 x0 = x0.real.ravel()
 
-# x0 = bk.ones(nvar)*0.5
+x0 = bk.ones(nvar) * 0.5
+x0 = bk.array(np.random.rand(nvar))
 
 f = simu(x0)
 g = pt.grad(simu)

@@ -55,25 +55,18 @@ bands[2 * Nb - 1 : 3 * Nb - 3, 0] = bands[2 * Nb - 1 : 3 * Nb - 3, 1] = np.flipu
 ##############################################################################
 # Calculate the band diagram:
 
-nh = 100
+sim = pt.Simulation(lattice, epsilon=epsilon, nh=100)
+
 BD = {}
 for polarization in ["TE", "TM"]:
     ev_band = []
-    q = 0
     for kx, ky in bands:
-        sim = pt.Simulation(lattice, (kx, ky), epsilon=epsilon, mu=1, nh=100)
-        a = sim.lattice.basis_vectors[0][0]
-        neig = 6
-        k0, v = sim.solve(polarization)
-        ev_norma = k0[:neig] * a / (2 * np.pi)
-        # plt.plot(q*np.ones(neig),ev_norma,"ob")
+        sim.k = kx, ky
+        sim.solve(polarization, vectors=False)
+        ev_norma = sim.eigenvalues * a / (2 * np.pi)
         ev_band.append(ev_norma)
-
-        q += (kx**2 + ky**2) ** 0.5
-        plt.pause(0.1)
     # append first value since this is the same point
     ev_band.append(ev_band[0])
-
     BD[polarization] = ev_band
 
 bands_plot = np.zeros(3 * Nb - 2)
