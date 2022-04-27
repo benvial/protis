@@ -19,9 +19,6 @@ import numpy as np
 
 import protis as pt
 
-plt.close("all")
-plt.ion()
-
 ##############################################################################
 # Reference results are taken from :cite:p:`Hussein2009`.
 
@@ -72,7 +69,7 @@ def full_model(bands, nh=100):
         BD[polarization] = ev_band
     BD["TM"] = pt.backend.stack(BD["TM"]).real
     BD["TE"] = pt.backend.stack(BD["TE"]).real
-    t_full = pt.toc(t0)
+    t_full = pt.toc(t0, verbose=False)
     return BD, t_full, sim
 
 
@@ -107,7 +104,7 @@ def rbme_model(bands, nh=100, Nmodel=2, N_RBME=8):
         BD_RBME[polarization] = ev_band
     BD_RBME["TM"] = pt.backend.stack(BD_RBME["TM"]).real
     BD_RBME["TE"] = pt.backend.stack(BD_RBME["TE"]).real
-    t_rbme = pt.toc(t0)
+    t_rbme = pt.toc(t0, verbose=False)
     return BD_RBME, t_rbme, sim
 
 
@@ -130,6 +127,11 @@ def k_space_path_plot(Nb, K):
 
 bands_plot = k_space_path_plot(49, K)
 
+
+##############################################################################
+# TE polarization:
+
+
 plt.figure(figsize=(3.2, 2.5))
 plotTE = plt.plot(bands_plot, BD["TE"], c="#cf5268", lw=1.5, alpha=0.5)
 plotTE_RBME = plt.plot(bands_plot, BD_RBME["TE"], "--", c="#cf5268")
@@ -145,6 +147,8 @@ plt.legend([plotTE[0], plotTE_RBME[0]], ["full", "2-point RBME"], loc=(0.31, 0.0
 plt.title("TE modes", c="#cf5268")
 plt.tight_layout()
 
+##############################################################################
+# TM polarization:
 
 plt.figure(figsize=(3.2, 2.5))
 plotTM = plt.plot(bands_plot, BD["TM"], c="#4199b0", lw=1.5, alpha=0.5)
@@ -174,8 +178,6 @@ for nh in NH:
     BD, t_full, sim_full = full_model(bands, nh=nh)
     BD_RBME2, t_rbme2, sim_rbme2 = rbme_model(bands, nh=nh, Nmodel=2, N_RBME=8)
     BD_RBME3, t_rbme3, sim_rbme3 = rbme_model(bands, nh=nh, Nmodel=3, N_RBME=8)
-    print(f"speedup 2 points = {t_full/t_rbme2}")
-    print(f"speedup 3 points = {t_full/t_rbme3}")
     actual_nh.append(sim_full.nh)
     s2.append(t_rbme2 / t_full)
     s3.append(t_rbme3 / t_full)
@@ -207,8 +209,6 @@ for nh in NH:
         BD, t_full, sim_full = full_model(bands, nh=nh)
         BD_RBME2, t_rbme2, sim_rbme2 = rbme_model(bands, nh=nh, Nmodel=2, N_RBME=8)
         BD_RBME3, t_rbme3, sim_rbme3 = rbme_model(bands, nh=nh, Nmodel=3, N_RBME=8)
-        print(f"speedup 2 points = {t_full/t_rbme2}")
-        print(f"speedup 3 points = {t_full/t_rbme3}")
         actual_nh.append(sim_full.nh)
         s2.append(t_rbme2 / t_full)
         s3.append(t_rbme3 / t_full)

@@ -67,7 +67,7 @@
 .. inclusion-marker-badges
 
 =============================================================
-protis: Fourier Modal Method for multilayer metamaterials
+protis: Plane wave expansion method for photonic crystals
 =============================================================
 
 

@@ -38,6 +38,7 @@ del formulations
 del Simulation
 del simulation
 del utils
+del layers
 
 
 def set_backend(backend):
