@@ -255,7 +255,7 @@ class Simulation:
                     self.mu_hat[2, 2] if is_anisotropic(self.mu_hat) else self.mu_hat
                 )
 
-    def solve(self, polarization, vectors=True, rbme=None):
+    def solve(self, polarization, vectors=True, rbme=None, return_square=False):
         self.build_A(polarization)
         self.build_B(polarization)
         if rbme is None:
@@ -275,8 +275,13 @@ class Simulation:
         kmin = 2 * bk.pi / lmin
         eps = 1e-12 * kmin**2
         k0 = (w + eps) ** 0.5  # this is to avoid nan gradients
-        i = bk.argsort(bk.real(k0))
-        self.eigenvalues = k0[i]
+
+        if return_square:
+            i = bk.argsort(bk.real(w))
+            self.eigenvalues = w[i]
+        else:
+            i = bk.argsort(bk.real(k0))
+            self.eigenvalues = k0[i]
         self.eigenvectors = v[:, i] if vectors else None
         if vectors:
             return self.eigenvalues, self.eigenvectors

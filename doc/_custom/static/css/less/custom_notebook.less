@@ -1,8 +1,8 @@
 @import "variables.less";
 
-#ipython_notebook img{                                                                                        
-    display:block; 
-    background: url("https://gitlab.com/protis/protis/-/raw/master/doc/_assets/protis-name.png") no-repeat;
+#ipython_notebook img{
+    display:block;
+    background: url("https://gitlab.com/protis/protis/-/raw/main/doc/_assets/protis-name.png") no-repeat;
     background-size: contain;
     width: 100px;
     height: 30px;
@@ -1425,17 +1425,17 @@ div.widget-hbox .widget-label,
 .rendered_html :visited,
 .rendered_html :visited:active,
 .rendered_html :visited:focus {
- color: #2e6eb2;
+ color: @brand-primary;
 }
 .rendered_html :visited:hover,
 .rendered_html :link:hover {
  font-family: @font-family-serif;
  font-size: 100%;
- color: #eb6a18;
+ color: @brand-primary;
 }
 a.anchor-link:link:hover {
  font-size: inherit;
- color: #eb6a18;
+ color: @brand-primary-dark;
 }
 a.anchor-link:link {
  font-size: inherit;
@@ -1894,7 +1894,7 @@ div.tooltiptext.bigtooltip {
  color: @brand-secondary;
 }
 .cm-s-ipython span.cm-keyword {
- color: @brand-primary-dark; 
+ color: @brand-primary-dark;
  font-weight: bold;
 }
 .cm-s-ipython span.cm-string {
@@ -1970,7 +1970,7 @@ div.cell.text_cell .cm-s-default span.cm-variable-3 {
  color: @brand-secondary;
 }
 .cm-s-default .cm-keyword {
- color: @brand-primary-dark; 
+ color: @brand-primary-dark;
  font-weight: bold;
 }
 .cm-s-default .cm-number {
@@ -2010,7 +2010,7 @@ div.cell.text_cell .cm-s-default span.cm-variable-3 {
  width: auto;
 }
 
-// 
+//
 // .highlight .kn {
 //     color: @brand-primary;
 //     font-weight: bold;
@@ -2044,7 +2044,7 @@ div.cell.text_cell .cm-s-default span.cm-variable-3 {
 //     color: #74807d;
 //     font-style: italic;
 // }
-// 
+//
 // .highlight .nf {
 //     color: #4194a6;
 // }
@@ -2063,7 +2063,7 @@ span.save_widget span.filename {
  background-color: @body-bg-darker;
 }
 span.save_widget span.filename:hover {
- color: #de6d25;
+ color: @brand-primary-light;
  background-color: @body-bg-darker;
 }
 #menubar {

@@ -79,6 +79,7 @@ h1 {
   text-align: left;
   color: @brand-primary;
   padding-bottom: 1em;
+  font-weight: 600;
 }
 
 section p {
@@ -114,7 +115,7 @@ section.color-header h2 {
 }
 
 .btn-round {
-  border-radius: 16px !important;
+  border-radius: 8px !important;
   border-width: 1px !important;
   color: white;
   background-color: transparent;
@@ -249,7 +250,7 @@ section.color-footer {
 .footer .btn {
   color: @body-bg;
   background-color: transparent;
-  border-radius: 10px;
+  border-radius: 8px;
   box-shadow: none;
   border: 2px solid @body-bg;
   width: 100px;
@@ -458,9 +459,9 @@ input {
   height: 40px;
   display: block;
   text-decoration: none;
-  -webkit-border-radius: 20px;
-  -moz-border-radius: 20px;
-  border-radius: 20px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
   display: none;
   -webkit-transition: all 0.3s linear;
   -moz-transition: all 0.3s ease;
@@ -642,7 +643,7 @@ ul.search li {
 }
 
 .navbar-light .navbar-nav .nav-link {
-  color: @gray-base !important;
+  color:  @gray-base !important;
   background-color: transparent;
   text-decoration-line: underline;
   text-underline-position: under;
@@ -654,7 +655,7 @@ ul.search li {
 
 .navbar-light .navbar-nav .nav-link:focus,
 .navbar-light .navbar-nav .nav-link:hover {
-  color: @gray-base;
+  color: @gray-base !important;
   background-color: transparent;
   text-decoration-line: underline;
   text-underline-position: under;
@@ -672,7 +673,7 @@ ul.search li {
 
 i.fab {
   background-color: darken(@gray-base,7%);
-  border-radius: 50%;
+  border-radius: 10%;
   padding: 10px;
   width: 1.9em;
   height: 1.9em;
@@ -695,13 +696,13 @@ i.fab {
 // }
 
 .icon-python {
-  background: @gray-base;
+  background: white;
   -webkit-mask-image: url("https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/python.svg");
   mask-image: url("https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/python.svg");
 }
 
 .icon-jupyter {
-  background: @gray-base;
+  background: white;
   -webkit-mask-image: url("https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/jupyter.svg");
   mask-image: url("https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/jupyter.svg");
 }
@@ -709,11 +710,11 @@ i.fab {
 img,
 svg {
   vertical-align: middle;
-  border-radius: 12px;
+  border-radius: 6px;
 }
 
 .bd-search input {
-  border-radius: 12px;
+  border-radius: 6px;
 }
 
 .form-control:focus {
@@ -922,6 +923,12 @@ span.highlighted {
 .navbar-center-item {
   font-size: larger;
   text-transform: uppercase;
+  font-weight: 800;
+font-family: @font-family-sans-serif;
+}
+.navbar-light .navbar-nav > .active > .nav-link{
+  font-weight: 800;
+  color:@brand-primary !important;
 }
 
 .homepage-head {
