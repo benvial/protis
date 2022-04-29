@@ -13,6 +13,7 @@ from nannos.layers import is_anisotropic
 
 from . import backend as bk
 from . import get_backend, get_block
+from .plot import *
 from .reduced import gram_schmidt
 
 
@@ -296,3 +297,33 @@ class Simulation:
             v.append(self.eigenvectors[:, :N_RBME])
         U = bk.hstack(v)
         return gram_schmidt(U)
+
+    def get_mode(self, imode):
+        v = self.eigenvectors
+        V = bk.zeros(self.lattice.discretization, dtype=bk.complex128)
+        V[self.harmonics[0], self.harmonics[1]] = v[:, imode]
+        mode = fft.inverse_fourier_transform(V)
+        mode /= bk.max(bk.abs(mode))
+        return mode
+
+    def plot(
+        self,
+        field,
+        nper=1,
+        ax=None,
+        cmap="RdBu_r",
+        show_cell=False,
+        cellstyle="-k",
+        **kwargs,
+    ):
+        return plot2d(
+            self.lattice,
+            self.lattice.grid,
+            field,
+            nper,
+            ax,
+            cmap,
+            show_cell,
+            cellstyle,
+            **kwargs,
+        )
