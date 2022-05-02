@@ -6,120 +6,13 @@
 # See the documentation at protis.gitlab.io
 
 
-import scipy
-from nannos import is_scalar as _is_scalar
-from nannos.formulations import fft
-from nannos.layers import is_anisotropic
-
 from . import backend as bk
-from . import get_backend, get_block
+from . import get_block
+from .eig import gen_eig
+from .fft import *
 from .plot import *
 from .reduced import gram_schmidt
-
-
-def is_scalar(a):
-    if hasattr(a, "shape"):
-        return len(a.shape) == 0
-    else:
-        return _is_scalar(a)
-
-
-def block_anisotropic(a, dim=3):
-    l = len(a[0]), len(a[1])
-    if l != (dim, dim):
-        raise ValueError(f"input shape must be ({dim},{dim},N,N)")
-    return bk.stack(
-        [bk.array(bk.stack([bk.array(a[j][i]) for i in range(3)])) for j in range(3)]
-    )
-
-
-def block_z_anisotropic(axx, axy, ayx, ayy, azz):
-    zer = 0 * axy
-    a_list = [
-        [axx, axy, zer],
-        [ayx, ayy, zer],
-        [zer, zer, azz],
-    ]
-    return block_anisotropic(a_list)
-
-
-def block(a):
-    return bk.hstack(
-        [
-            bk.array(bk.vstack([bk.array(a[j][i]) for i in range(len(a))]))
-            for j in range(len(a))
-        ]
-    )
-
-
-def is_z_anisotropic(a):
-    if not is_anisotropic(a):
-        return False
-    else:
-        zer = 0 * a[0, 0]
-        return (
-            bk.allclose(a[0, 2], zer)
-            and bk.allclose(a[1, 2], zer)
-            and bk.allclose(a[2, 0], zer)
-            and bk.allclose(a[2, 1], zer)
-        )
-
-
-def is_symmetric(M):
-    return bk.allclose(M, M.T)
-
-
-def is_hermitian(M):
-    return bk.allclose(M, bk.conj(M).T)
-
-
-def eig(M, vectors=True, hermitian=False):
-    if vectors:
-        _eig = bk.linalg.eigh if hermitian else bk.linalg.eig
-    else:
-        _eig = bk.linalg.eigvalsh if hermitian else bk.linalg.eigvals
-    return _eig(M)
-
-
-def gen_eig(A, B, vectors=True):
-    A = bk.array(A + 0j, dtype=bk.complex128)
-    B = bk.array(B + 0j, dtype=bk.complex128)
-    if get_backend() == "scipy":
-        return _gen_eig_scipy(A, B, vectors=vectors)
-    if is_scalar(B):
-        C = A / B
-        return eig(C, vectors=vectors, hermitian=is_hermitian(C))
-    else:
-        invB = bk.linalg.inv(B)
-        C = invB @ A
-        return eig(C, vectors=vectors, hermitian=is_hermitian(C))
-
-
-def _gen_eig_scipy(A, B, vectors=True):
-    if is_scalar(B):
-        if vectors:
-            try:
-                out = scipy.linalg.eigh(A / B)
-            except scipy.linalg.LinAlgError:
-                out = scipy.linalg.eig(A / B)
-        else:
-            try:
-                out = scipy.linalg.eigvalsh(A / B)
-            except scipy.linalg.LinAlgError:
-                out = scipy.linalg.eigvals(A / B)
-    else:
-        if vectors:
-            try:
-                out = scipy.linalg.eigh(A, B)
-            except scipy.linalg.LinAlgError:
-                out = scipy.linalg.eig(A, B)
-        else:
-            try:
-                out = scipy.linalg.eigvalsh(A, B)
-            except scipy.linalg.LinAlgError:
-                out = scipy.linalg.eigvals(A, B)
-
-    return out
+from .utils import *
 
 
 class Simulation:
@@ -180,7 +73,7 @@ class Simulation:
             utf.append(self._get_toeplitz_matrix(u[2, 2]))
             return block_z_anisotropic(*utf)
 
-        uft = fft.fourier_transform(u)
+        uft = fourier_transform(u)
         ix = bk.arange(self.nh)
         jx, jy = bk.meshgrid(ix, ix, indexing="ij")
         delta = self.harmonics[:, jx] - self.harmonics[:, jy]
@@ -188,9 +81,11 @@ class Simulation:
 
     def build_epsilon_hat(self):
         self.epsilon_hat = self._get_toeplitz_matrix(self.epsilon)
+        return self.epsilon_hat
 
     def build_mu_hat(self):
         self.mu_hat = self._get_toeplitz_matrix(self.mu)
+        return self.mu_hat
 
     def build_A(self, polarization):
         def matmuldiag(A, B):
@@ -237,6 +132,8 @@ class Simulation:
 
         self.A = bk.array(A + 0j, dtype=bk.complex128)
 
+        return self.A
+
     def build_B(self, polarization):
         if polarization == "TM":
             if is_scalar(self.epsilon_hat):
@@ -256,16 +153,29 @@ class Simulation:
                     self.mu_hat[2, 2] if is_anisotropic(self.mu_hat) else self.mu_hat
                 )
 
-    def solve(self, polarization, vectors=True, rbme=None, return_square=False):
+        return self.B
+
+    def solve(
+        self,
+        polarization,
+        vectors=True,
+        rbme=None,
+        return_square=False,
+        sparse=False,
+        neig=10,
+        ktol=1e-12,
+        **kwargs,
+    ):
         self.build_A(polarization)
         self.build_B(polarization)
         if rbme is None:
             A = self.A
             B = self.B
         else:
+            # reduced bloch mode expansion
             A = bk.conj(rbme.T) @ self.A @ rbme
             B = self.B if is_scalar(self.B) else bk.conj(rbme.T) @ self.B @ rbme
-        eign = gen_eig(A, B, vectors=vectors)
+        eign = gen_eig(A, B, vectors=vectors, sparse=sparse, neig=neig, **kwargs)
         w = eign[0] if vectors else eign
         v = eign[1] if vectors else None
         lmin = bk.min(
@@ -274,7 +184,7 @@ class Simulation:
             )
         )
         kmin = 2 * bk.pi / lmin
-        eps = 1e-12 * kmin**2
+        eps = ktol * kmin**2
         k0 = (w + eps) ** 0.5  # this is to avoid nan gradients
 
         if return_square:
@@ -283,6 +193,9 @@ class Simulation:
         else:
             i = bk.argsort(bk.real(k0))
             self.eigenvalues = k0[i]
+        if rbme is not None and vectors:
+            # retrieve full vectors
+            v = rbme @ v @ bk.conj(rbme.T)
         self.eigenvectors = v[:, i] if vectors else None
         if vectors:
             return self.eigenvalues, self.eigenvectors
@@ -302,7 +215,7 @@ class Simulation:
         v = self.eigenvectors
         V = bk.zeros(self.lattice.discretization, dtype=bk.complex128)
         V[self.harmonics[0], self.harmonics[1]] = v[:, imode]
-        mode = fft.inverse_fourier_transform(V)
+        mode = inverse_fourier_transform(V)
         mode /= bk.max(bk.abs(mode))
         return mode
 

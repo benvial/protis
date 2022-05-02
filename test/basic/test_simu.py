@@ -21,13 +21,11 @@ def test_simu():
         epsilon[hole] = 8.9
     nh = 100
     mu = 1
-    bands = [(0, 0), (pt.pi / a, 0), (pt.pi / a, 0)]
+    bands = [(0, 0), (pt.pi / a, 0), (pt.pi / a, pt.pi / a)]
     for polarization in ["TE", "TM"]:
         for kx, ky in bands:
             print(kx, ky)
             sim = pt.Simulation(lattice, (kx, ky), epsilon=epsilon, mu=mu, nh=nh)
-            a = sim.lattice.basis_vectors[0][0]
-
             neig = 6
             k0, v = sim.solve(polarization)
             ev_norma = k0[:neig] * a / (2 * pt.pi)
