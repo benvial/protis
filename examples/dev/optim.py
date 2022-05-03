@@ -22,7 +22,7 @@ bk = pt.backend
 no = pt.optimize
 
 
-def symmetrize_pattern(dens, x=True, y=True, s8=True):
+def symmetrize_pattern(dens, x=False, y=False, s8=False):
     dens = bk.array(dens)
     if x:
         dens = 0.5 * (dens + bk.fliplr(dens))
@@ -58,13 +58,14 @@ lattice = pt.Lattice([[a, 0], [0, a]], discretization=2**8)
 
 eps_min, eps_max = 1, 9
 
-ieig = 3
 nh = 100
 Nb = 101
-polarization = "TE"
-center_target = 0.7
+polarization = "TM"
+
+ieig = 5
+center_target = 0.9
 alpha = 0.01
-rfilt = lattice.discretization[0] / 1050
+rfilt = 0.1  # lattice.discretization[0]
 nvar = lattice.discretization[0] * lattice.discretization[1]
 
 r0 = 0.2
@@ -74,7 +75,9 @@ x0[hole] = 0
 
 # if polarization =="TM":
 #     x0 = 1-x0
+
 # x0 = bk.ones(nvar) * 0.5
+
 x0 = bk.array(np.random.rand(nvar))
 x0 = bk.reshape(x0, lattice.discretization)
 x0 = no.apply_filter(x0, rfilt * 2)
@@ -85,15 +88,16 @@ x0 = x0.real.ravel()
 
 bands, K = k_space_path(Nb, a)
 bands_plot = k_space_path_plot(Nb, K)
-
-bands = bands[:Nb]
-bands_plot = bands_plot[:Nb]
+#
+# bands = bands[:Nb]
+# bands_plot = bands_plot[:Nb]
 
 
 type_opt = "dispersion"
+# type_opt = "dirac"
 ks = bk.array(bands_plot[:Nb])
 dispersion = -0.0 * bk.cos(ks * a)  # + 0.004 * bk.cos(2*ks*a) - 0.002 * bk.cos(3*ks*a)
-
+omega_c = None
 
 # fig, ax = plt.subplots(1)
 
@@ -134,12 +138,14 @@ def rbme_model(bands, epsilon, polarization, nh=nh, Nmodel=2, N_RBME=8):
         ev_norma = sim.eigenvalues * a / (2 * np.pi)
         ev_band.append(ev_norma)
     # append first value since this is the same point
-    # ev_band.append(ev_band[0])
+
+    ev_band.append(ev_band[0])
     BD_RBME = pt.backend.stack(ev_band).real
     return BD_RBME, sim
 
 
 def simu(x, proj_level=None, rfilt=0, return_bg=False):
+    global omega_c
     dens = bk.reshape(x, lattice.discretization)
 
     dens = symmetrize_pattern(dens)
@@ -151,23 +157,26 @@ def simu(x, proj_level=None, rfilt=0, return_bg=False):
 
     kx, ky = 0, 0
     BD_RBME, sim = rbme_model(bands, epsilon, polarization, nh=nh, Nmodel=2, N_RBME=8)
-    width = bk.min(BD_RBME[:, ieig + 1]) - bk.max(BD_RBME[:, ieig])
-    center = (
-        bk.min(bk.real(BD_RBME[:, ieig + 1])) + bk.max(bk.real(BD_RBME[:, ieig]))
-    ) / 2
+
     # BG = BG/center
 
     if type_opt == "dispersion":
-        objective = bk.sum(
-            (BD_RBME[:Nb, ieig] - dispersion - bk.mean(BD_RBME[:Nb, ieig])) ** 2
-        )
+        omega_c = bk.mean(BD_RBME[:Nb, ieig])
+        objective = bk.sum((BD_RBME[:Nb, ieig] - dispersion - omega_c) ** 2)
     else:
 
         # objective1 = -width/center_target * alpha
         # objective2 = (center - center_target)**2/center_target**2
         # objective = objective1 * alpha + objective2* (1 - alpha)
 
+        width = bk.min(BD_RBME[:, ieig + 1]) - bk.max(BD_RBME[:, ieig])
+        center = (bk.min(BD_RBME[:, ieig + 1]) + bk.max(BD_RBME[:, ieig])) / 2
         objective = bk.abs(center - center_target) / width
+        objective = 1 / width
+        # objective = bk.abs(center - center_target) / width
+
+        # objective = (BD_RBME[2*Nb, ieig ] - BD_RBME[2*Nb, ieig + 1])**2 #+ (BD_RBME[:, ieig -1] - BD_RBME[:, ieig ])**2
+
         # objective = 1/width
 
     is_grad_pass = objective.grad_fn is not None
@@ -202,24 +211,25 @@ def bg_metrics(BG, verbose=False):
 
 
 def plot_bd(BD_RBME, density_fp, ax, ax_ins):
+
     plotTE_RBME = ax.plot(bands_plot, BD_RBME, "-", c=color)
     ax.set_ylim(0, 1.2)
     ax.set_xlim(0, bands_plot[-1])
-    # ax.set_xticks(
-    #     [0, K[-1], 2 * K[-1], bands_plot[-1]], ["$\Gamma$", "$X$", "$M$", "$\Gamma$"]
-    # )
-    # ax.axvline(K[-1], c="k", lw=0.3)
-    # ax.axvline(2 * K[-1], c="k", lw=0.3)
-    ax.set_xticks([0, K[-1]], ["$\Gamma$", "$X$"])
+    ax.set_xticks(
+        [0, K[-1], 2 * K[-1], bands_plot[-1]], ["$\Gamma$", "$X$", "$M$", "$\Gamma$"]
+    )
+    ax.axvline(K[-1], c="k", lw=0.3)
+    ax.axvline(2 * K[-1], c="k", lw=0.3)
+    # ax.set_xticks([0, K[-1]], ["$\Gamma$", "$X$"])
     ax.set_ylabel(r"Normalized frequency $\tilde{\omega} = \omega a/2\pi c$")
     # ax.legend([plotTE_RBME[0]], ["full", "2-point RBME"], loc=(0.31, 0.02))
     width, center = bg_metrics(BD_RBME, verbose=True)
 
     ax.set_title(f"{polarization} modes", c=color)
     if type_opt == "dispersion":
-        mean_val = bk.mean(bk.array(BD_RBME[:Nb, ieig]))
-        ax_bg.plot(ks, dispersion + mean_val, "--k")
-        ax_bg.set_ylim(0.9 * mean_val, 1.1 * mean_val)
+        omega_c = bk.mean(bk.array(BD_RBME[:Nb, ieig]))
+        ax_bg.plot(ks, dispersion + omega_c, "--k")
+        ax_bg.set_ylim(0.9 * omega_c, 1.1 * omega_c)
     else:
         y1 = np.min(BD_RBME[:, ieig + 1].real)
         y0 = np.max(BD_RBME[:, ieig].real)
