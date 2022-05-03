@@ -8,10 +8,10 @@
 
 import numpy as np
 
-import protis as pt
-
 
 def test_simu():
+    import protis as pt
+
     pt.set_backend("scipy")
     bk = pt.backend
     a = 1

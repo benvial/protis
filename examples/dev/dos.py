@@ -99,7 +99,7 @@ def rbme_model(bands, nh=100, Nmodel=2, N_RBME=8):
 
 
 bk = pt.backend
-Nbz = 101
+Nbz = 51
 N_RBME = 8
 Nmodel = 2
 
@@ -109,19 +109,29 @@ bandsy = bk.linspace(-pt.pi / a, pt.pi / a, Nbz)
 bandsx1, bandsy1 = bk.meshgrid(bandsx, bandsy, indexing="ij")
 bands = bk.vstack([bandsx1.ravel(), bandsy1.ravel()]).T
 
-BD_RBME, t_rbme, sim_rbme = rbme_model(bands, nh=100, Nmodel=Nmodel, N_RBME=N_RBME)
+# BD_RBME, t_rbme, sim_rbme = rbme_model(bands, nh=100, Nmodel=Nmodel, N_RBME=N_RBME)
 # neig_rbme = BD_RBME["TE"].shape[-1]
 # test = BD_RBME["TM"].reshape(Nbz,Nbz,neig_rbme)
+
+BD, t_full, sim_full = full_model(bands, nh=100)
+
+# neig_max = sim_full.nh
+
+full_bd = dict()
 for polarization in ["TE", "TM"]:
-    neig_rbme = BD_RBME[polarization].shape[-1]
-    test = BD_RBME[polarization].reshape(Nbz, Nbz, neig_rbme)
+    # neig_rbme = BD[polarization].shape[-1]
+    full_bd[polarization] = BD[polarization].reshape(Nbz, Nbz, sim_full.nh)
     fig = plt.figure()
     ax = plt.axes(projection="3d")
 
     nmax = 6
     for i in range(nmax):
         ax.plot_surface(
-            bandsx1, bandsy1, test[:, :, i], cmap="viridis", edgecolor="none"
+            bandsx1,
+            bandsy1,
+            full_bd[polarization][:, :, i],
+            cmap="viridis",
+            edgecolor="none",
         )
 
     plt.title(polarization)
@@ -129,6 +139,7 @@ for polarization in ["TE", "TM"]:
     ax.set_box_aspect([1, 1, 2])
     ax.set_zlim(0, 1.0)
     plt.tight_layout()
+    plt.pause(0.01)
 
 #
 # BD, t_full, sim_full = full_model(bands, nh=100)
@@ -148,55 +159,74 @@ for polarization in ["TE", "TM"]:
 # ax.set_zlim(0,1.)
 # plt.tight_layout()
 
-omega = test
+polarization = "TM"
+# polarization = "TE"
 
-vx = bk.gradient(omega, axis=0)
-vy = bk.gradient(omega, axis=1)
-
-kx = bk.gradient(bandsx1, axis=0)
-ky = bk.gradient(bandsy1, axis=1)
-
-
-vx = bk.array([vx[:, :, i] / kx for i in range(vx.shape[-1])])
-vy = bk.array([vy[:, :, i] / kx for i in range(vy.shape[-1])])
-
-v = (vx**2 + vy**2) ** 0.5
-
-plt.figure()
-plt.imshow(v[1])
+omega = full_bd[polarization]
+#
+# vx = bk.gradient(omega, axis=0)
+# vy = bk.gradient(omega, axis=1)
+#
+# kx = bk.gradient(bandsx1, axis=0)
+# ky = bk.gradient(bandsy1, axis=1)
+#
+#
+# vx = bk.array([vx[:, :, i] / kx for i in range(vx.shape[-1])])
+# vy = bk.array([vy[:, :, i] / kx for i in range(vy.shape[-1])])
+# v = (vx**2 + vy**2) ** 0.5
+#
 
 from scipy.interpolate import RectBivariateSpline
 
-Nbz_new = Nbz * 1
-tol_omega = 1e-3
+Nbz_new = Nbz * 4
+tol_omega = 1e-4  # kx[0,0]/Nbz_new
 iband = 0
+k_interpx, k_interpy = 3, 3
 
-DOS = []
 
 # OMEGAS = bk.linspace(omega[:,:,iband].min(),omega[:,:,iband].max(),130)
-OMEGAS = bk.linspace(0.0, 1, 300)
+OMEGAS = bk.linspace(0.0, 1, 1000)
+
 
 bandsx_new = bk.linspace(-pt.pi / a, pt.pi / a, Nbz_new)
 bandsy_new = bk.linspace(-pt.pi / a, pt.pi / a, Nbz_new)
 bandsx_new1, bandsy_new1 = bk.meshgrid(bandsx_new, bandsy_new, indexing="ij")
 
 nmax = 8
+
+# plt.close("all")
+
+
+DOS = []
 for iband in range(nmax):
     print(iband)
-    interp_omega = RectBivariateSpline(bandsx, bandsy, omega[:, :, iband])
-    interp_v = RectBivariateSpline(bandsx, bandsy, v[iband])
+    interp_omega = RectBivariateSpline(
+        bandsx, bandsy, omega[:, :, iband], kx=k_interpx, ky=k_interpy
+    )
+    omega0_new = interp_omega(bandsx_new, bandsy_new)
+
+    # interp_v = RectBivariateSpline(bandsx, bandsy, v[iband], kx=k_interpx, ky=k_interpy)
+    # v_new = interp_v(bandsx_new, bandsy_new)
+    #
+
+    vx = interp_omega(bandsx_new, bandsy_new, dx=1, dy=0)
+    vy = interp_omega(bandsx_new, bandsy_new, dx=0, dy=1)
+    v_new = (vx**2 + vy**2) ** 0.5
+
+    # plt.clf()
+    # plt.imshow(v_new)
+    # plt.pause(0.01)
+    #
     DOS_i = []
 
     for omega_i in OMEGAS:
-        print(omega_i)
-        omega0_new = interp_omega(bandsx_new, bandsy_new)
-        v_new = interp_v(bandsx_new, bandsy_new)
+        # print(omega_i)
         cond = bk.abs(omega0_new - omega_i) < tol_omega
         if not bk.any(cond):
             I = 0
         else:
-            u = bk.where(cond, 1 / (1e-2 + v_new), 0)
-            I = bk.trapz(bk.trapz(u, bandsx_new), bandsy_new)
+            u = bk.where(cond, 1 / (1e-3 + v_new), 0)
+            I = bk.trapz(bk.trapz(u, bandsy_new), bandsx_new)
         DOS_i.append(I)
         # plt.clf()
         # u = bk.where(bk.abs(omega0_new - omega_i)<tol_omega,v_new,0)
@@ -209,4 +239,12 @@ DOS = bk.array(DOS)
 DOS_TOT = bk.sum(DOS, axis=0)
 
 # plt.close("all")
-plt.plot(OMEGAS, DOS_TOT / (2 * bk.pi / a) ** 2)
+# plt.figure()
+
+
+plt.plot(OMEGAS, DOS_TOT / (2 * bk.pi / a) ** 2, "-")
+#
+# plt.figure()
+# plt.plot(OMEGAS, DOS_TOT , "-")
+# plt.plot(OMEGAS, OMEGAS*3 , "-")
+# plt.plot(OMEGAS, DOS_TOT / (2 * bk.pi / a) ** 2, "-")

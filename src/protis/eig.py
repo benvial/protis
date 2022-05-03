@@ -7,7 +7,6 @@
 
 
 import scipy
-from torch import lobpcg
 
 from . import backend as bk
 from . import get_backend
@@ -67,9 +66,9 @@ def _gen_eig_torch_sparse(A, B, vectors=True, neig=10, **kwargs):
         print(C.dtype)
         print(type(C))
         B1 = bk.array(bk.eye(A.shape[0]) + 0j, dtype=bk.complex128)
-        out = lobpcg(A / B, k=neig, B=B1, **kwargs)
+        out = bk.lobpcg(A / B, k=neig, B=B1, **kwargs)
     else:
-        out = lobpcg(A, k=neig, B=B, **kwargs)
+        out = bk.lobpcg(A, k=neig, B=B, **kwargs)
     return out if vectors else out[0]
 
 
