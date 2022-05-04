@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Author: Benjamin Vial
-# This file is part of nannos
+# This file is part of protis
 # License: GPLv3
-# See the documentation at nannos.gitlab.io
+# See the documentation at protis.gitlab.io
 
 
 from nannos import is_scalar as _is_scalar

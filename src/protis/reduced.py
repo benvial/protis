@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Author: Benjamin Vial
-# License: MIT
+# This file is part of protis
+# License: GPLv3
+# See the documentation at protis.gitlab.io
 
 # Gram-Schmidt Orthogonization
 # https://gist.github.com/iizukak/1287876/edad3c337844fac34f7e56ec09f9cb27d4907cc7

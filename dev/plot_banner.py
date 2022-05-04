@@ -31,7 +31,7 @@ sim.build_epsilon_hat()
 M = sim.epsilon_hat
 
 cols = [
-    "#4AB08C",
+    "#b04a65",
     "#f0f0f0",
     "#e2e2e2",
     "#b1a9a9",

@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Author: Benjamin Vial
+# This file is part of protis
+# License: GPLv3
+# See the documentation at protis.gitlab.io
 
 
 import warnings
@@ -22,7 +27,7 @@ bk = pt.backend
 no = pt.optimize
 
 
-def symmetrize_pattern(dens, x=False, y=False, s8=False):
+def symmetrize_pattern(dens, x=True, y=True, s8=True):
     dens = bk.array(dens)
     if x:
         dens = 0.5 * (dens + bk.fliplr(dens))
@@ -60,12 +65,12 @@ eps_min, eps_max = 1, 9
 
 nh = 100
 Nb = 101
-polarization = "TM"
+polarization = "TE"
 
 ieig = 5
 center_target = 0.9
 alpha = 0.01
-rfilt = 0.1  # lattice.discretization[0]
+rfilt = lattice.discretization[0] / 100
 nvar = lattice.discretization[0] * lattice.discretization[1]
 
 r0 = 0.2
@@ -92,11 +97,15 @@ bands_plot = k_space_path_plot(Nb, K)
 # bands = bands[:Nb]
 # bands_plot = bands_plot[:Nb]
 
-
 type_opt = "dispersion"
 # type_opt = "dirac"
-ks = bk.array(bands_plot[:Nb])
-dispersion = -0.0 * bk.cos(ks * a)  # + 0.004 * bk.cos(2*ks*a) - 0.002 * bk.cos(3*ks*a)
+index1 = slice(0, 25)
+index2 = slice(-25, None)
+bands_plot = bk.array(bands_plot)
+ks = bk.hstack([bands_plot[index1], bands_plot[index2]])
+dispersion = 0 * bk.ones(
+    len(ks)
+)  # -dispersion#-0.0 * bk.cos(ks * a)  # + 0.004 * bk.cos(2*ks*a) - 0.002 * bk.cos(3*ks*a)
 omega_c = None
 
 # fig, ax = plt.subplots(1)
@@ -161,8 +170,9 @@ def simu(x, proj_level=None, rfilt=0, return_bg=False):
     # BG = BG/center
 
     if type_opt == "dispersion":
-        omega_c = bk.mean(BD_RBME[:Nb, ieig])
-        objective = bk.sum((BD_RBME[:Nb, ieig] - dispersion - omega_c) ** 2)
+        test = bk.hstack([BD_RBME[index1, ieig], BD_RBME[index2, ieig]])
+        omega_c = bk.mean(test)
+        objective = bk.sum((test - dispersion - omega_c) ** 2)
     else:
 
         # objective1 = -width/center_target * alpha
@@ -227,7 +237,9 @@ def plot_bd(BD_RBME, density_fp, ax, ax_ins):
 
     ax.set_title(f"{polarization} modes", c=color)
     if type_opt == "dispersion":
-        omega_c = bk.mean(bk.array(BD_RBME[:Nb, ieig]))
+        # omega_c = bk.mean(bk.array(BD_RBME[:, ieig]))
+        test = np.hstack([BD_RBME[index1, ieig], BD_RBME[index2, ieig]])
+        omega_c = np.mean(test)
         ax_bg.plot(ks, dispersion + omega_c, "--k")
         ax_bg.set_ylim(0.9 * omega_c, 1.1 * omega_c)
     else:
@@ -303,22 +315,76 @@ dens = bk.reshape(x_opt, lattice.discretization)
 
 dens = symmetrize_pattern(dens)
 density_f = no.apply_filter(dens, rfilt)
+density_bin = density_f
+density_bin[density_f < 0.5] = 0
+density_bin[density_f >= 0.5] = 1
+x_bin = density_bin.ravel()
 
-density_f[density_f < 0.5] = 0
-density_f[density_f >= 0.5] = 1
-x_bin = density_f.ravel()
-
-epsilon_bin = no.simp(density_f, eps_min, eps_max, p=1)
+epsilon_bin = no.simp(density_bin, eps_min, eps_max, p=1)
 
 obj, BD_RBME = simu(x_bin, proj_level=None, rfilt=0, return_bg=True)
 
 from nannos.plot import plot_layer
 
 grid = lattice.unit_grid
-bk.stack((grid[0], grid[1]))
+# bk.stack((grid[0], grid[1]))
 lattice.basis_vectors = bk.array(lattice.basis_vectors, dtype=bk.float32)
 plt.figure()
 ims = plot_layer(
     lattice, grid, epsilon_bin.real, nper=4, cmap=cmap, show_cell=True, cellstyle="y--"
 )
 plt.axis("off")
+
+from skimage import measure
+
+from protis.isocontour import get_isocontour
+
+x = bk.linspace(0, 1, lattice.discretization[0])
+y = bk.linspace(0, 1, lattice.discretization[1])
+
+from skimage import measure
+
+# contours = get_isocontour(*grid, density_bin.numpy(),0.)
+d = lattice.discretization
+
+im = density_bin.numpy()
+
+
+npad = 5
+im1 = np.pad(im, (npad, npad), constant_values=1)
+
+contours = measure.find_contours(im1, 0.0, fully_connected="high")
+
+x1 = np.pad(x, (npad, npad), constant_values=(-npad * a / d[0], a + npad * a / d[0]))
+y1 = np.pad(y, (npad, npad), constant_values=(-npad * a / d[1], a + npad * a / d[1]))
+
+
+for contour in contours:
+    contour[:, 0] = (
+        (x.max() - x.min()) * contour[:, 0] / len(x) + x.min() - npad * a / d[0]
+    )
+    contour[:, 1] = (
+        (y.max() - y.min()) * contour[:, 1] / len(y) + y.min() - npad * a / d[1]
+    )
+
+    contour[contour > 0.99] = 1
+    contour[contour < 0.01] = 0
+
+
+plt.figure()
+plt.pcolormesh(x1, y1, im1, cmap="Reds")
+plt.axis("off")
+plt.axis("scaled")
+
+
+plt.figure()
+plt.pcolormesh(x, y, im, cmap="Reds")
+plt.axis("off")
+plt.axis("scaled")
+
+for contour in contours:
+    plt.plot(contour[:, 0], contour[:, 1], "-b")
+    plt.tight_layout()
+
+
+np.savez("contour.npz", contours=contours, density_bin=density_bin)
