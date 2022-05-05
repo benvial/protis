@@ -101,20 +101,22 @@ class Simulation:
                     A = u[1, 1] * self.Kx @ self.Kx + u[0, 0] * self.Ky @ self.Ky
                     A -= u[1, 0] * self.Kx @ self.Ky + u[0, 1] * self.Ky @ self.Kx
                 else:
-                    q *= bk.array(bk.ones((self.nh, self.nh)))
-                    q = block(q)
+                    q = block(q[:2, :2])
                     u = bk.linalg.inv(q)
+                    qxx = get_block(q, 0, 0, self.nh)
+                    qxy = get_block(q, 0, 1, self.nh)
+                    qyx = get_block(q, 1, 0, self.nh)
+                    qyy = get_block(q, 1, 1, self.nh)
+
                     uxx = get_block(u, 0, 0, self.nh)
                     uxy = get_block(u, 0, 1, self.nh)
                     uyx = get_block(u, 1, 0, self.nh)
                     uyy = get_block(u, 1, 1, self.nh)
-                    # self.A = self.Kx @ u @ self.Kx + self.Ky @ u @ self.Ky
+
                     kyuxx = matmuldiag(self.Ky, uxx)
                     kxuyy = matmuldiag(self.Kx, uyy)
                     kxuyx = matmuldiag(self.Kx, uyx)
-                    kyuxy = matmuldiag(self.Ky, uyx)
-
-                    kxuyy = matmuldiag(self.Kx, uyy)
+                    kyuxy = matmuldiag(self.Ky, uxy)
                     A = (
                         matmuldiag(self.Kx.T, kxuyy.T).T
                         + matmuldiag(self.Ky.T, kyuxx.T).T

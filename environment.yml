@@ -8,6 +8,7 @@ dependencies:
   - numpy
   - scipy
   - matplotlib-base
+  - scikit-image
   - shapely
   - joblib
   - colorlog

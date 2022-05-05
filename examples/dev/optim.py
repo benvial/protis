@@ -5,21 +5,42 @@
 # License: GPLv3
 # See the documentation at protis.gitlab.io
 
-
+import os
+import tempfile
 import warnings
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
-warnings.filterwarnings("ignore")
 import protis as pt
 
 plt.ion()
 plt.close("all")
+warnings.filterwarnings("ignore")
+
+tmpdir = tempfile.mkdtemp(dir=".")
 
 
-backend = "autograd"
+def savefig(base, it):
+    name = tmpdir + "/" + base + str(it).zfill(4) + ".png"
+    plt.savefig(name)
+
+
+def pltpause(interval):
+    backend = plt.rcParams["backend"]
+    if backend in matplotlib.rcsetup.interactive_bk:
+        figManager = matplotlib._pylab_helpers.Gcf.get_active()
+        if figManager is not None:
+            canvas = figManager.canvas
+            if canvas.figure.stale:
+                canvas.draw()
+            canvas.start_event_loop(interval)
+            return
+
+
+# backend = "autograd"
 backend = "torch"
 pt.set_backend(backend)
 
@@ -63,11 +84,11 @@ lattice = pt.Lattice([[a, 0], [0, a]], discretization=2**8)
 
 eps_min, eps_max = 1, 9
 
-nh = 100
+nh = 300
 Nb = 101
-polarization = "TE"
+polarization = "TM"
 
-ieig = 5
+ieig = 4
 center_target = 0.9
 alpha = 0.01
 rfilt = lattice.discretization[0] / 100
@@ -98,15 +119,19 @@ bands_plot = k_space_path_plot(Nb, K)
 # bands_plot = bands_plot[:Nb]
 
 type_opt = "dispersion"
+type_opt = "bandgap"
 # type_opt = "dirac"
-index1 = slice(0, 25)
-index2 = slice(-25, None)
+index1 = slice(0, Nb)
+index2 = slice(0)  # slice(None, None)
 bands_plot = bk.array(bands_plot)
 ks = bk.hstack([bands_plot[index1], bands_plot[index2]])
-dispersion = 0 * bk.ones(
-    len(ks)
-)  # -dispersion#-0.0 * bk.cos(ks * a)  # + 0.004 * bk.cos(2*ks*a) - 0.002 * bk.cos(3*ks*a)
+
+dispersion = (
+    -0.01 * bk.cos(ks * a) + 0.004 * bk.cos(2 * ks * a) - 0.002 * bk.cos(3 * ks * a)
+)
 omega_c = None
+
+stopval = 1e-6 if type_opt == "dispersion" else None
 
 # fig, ax = plt.subplots(1)
 
@@ -198,7 +223,7 @@ def simu(x, proj_level=None, rfilt=0, return_bg=False):
         ax_bg.clear()
         plot_bd(BD_plot, density_fp_plot, ax_bg, ax_ins)
 
-    plt.pause(0.1)
+    pltpause(0.1)
 
     if return_bg:
         return objective, BD_RBME
@@ -220,20 +245,11 @@ def bg_metrics(BG, verbose=False):
     return width, center
 
 
-def plot_bd(BD_RBME, density_fp, ax, ax_ins):
+itplot = 0
 
-    plotTE_RBME = ax.plot(bands_plot, BD_RBME, "-", c=color)
-    ax.set_ylim(0, 1.2)
-    ax.set_xlim(0, bands_plot[-1])
-    ax.set_xticks(
-        [0, K[-1], 2 * K[-1], bands_plot[-1]], ["$\Gamma$", "$X$", "$M$", "$\Gamma$"]
-    )
-    ax.axvline(K[-1], c="k", lw=0.3)
-    ax.axvline(2 * K[-1], c="k", lw=0.3)
-    # ax.set_xticks([0, K[-1]], ["$\Gamma$", "$X$"])
-    ax.set_ylabel(r"Normalized frequency $\tilde{\omega} = \omega a/2\pi c$")
-    # ax.legend([plotTE_RBME[0]], ["full", "2-point RBME"], loc=(0.31, 0.02))
-    width, center = bg_metrics(BD_RBME, verbose=True)
+
+def plot_bd(BD_RBME, density_fp, ax, ax_ins):
+    global itplot
 
     ax.set_title(f"{polarization} modes", c=color)
     if type_opt == "dispersion":
@@ -243,6 +259,7 @@ def plot_bd(BD_RBME, density_fp, ax, ax_ins):
         ax_bg.plot(ks, dispersion + omega_c, "--k")
         ax_bg.set_ylim(0.9 * omega_c, 1.1 * omega_c)
     else:
+        width, center = bg_metrics(BD_RBME, verbose=True)
         y1 = np.min(BD_RBME[:, ieig + 1].real)
         y0 = np.max(BD_RBME[:, ieig].real)
         # print(y0,y1)
@@ -265,12 +282,28 @@ def plot_bd(BD_RBME, density_fp, ax, ax_ins):
                 r"$\tilde{\omega_0}=" + rf"{center:0.3f}$",
                 (bands_plot[-1] * 0.84, center * (1.02)),
             )
-    plt.tight_layout()
-    ax_ins.clear()
+        ax.set_ylim(0, 1.2)
+    plotTE_RBME = ax.plot(bands_plot, BD_RBME, "-", c=color)
 
+    ax.set_xlim(0, bands_plot[-1])
+    ax.set_xticks(
+        [0, K[-1], 2 * K[-1], bands_plot[-1]], ["$\Gamma$", "$X$", "$M$", "$\Gamma$"]
+    )
+    ax.axvline(K[-1], c="k", lw=0.3)
+    ax.axvline(2 * K[-1], c="k", lw=0.3)
+    # ax.set_xticks([0, K[-1]], ["$\Gamma$", "$X$"])
+    ax.set_ylabel(r"Normalized frequency $\tilde{\omega} = \omega a/2\pi c$")
+    # ax.legend([plotTE_RBME[0]], ["full", "2-point RBME"], loc=(0.31, 0.02))
+
+    plt.tight_layout()
+
+    ax_ins.clear()
     # plt.sca(ax)
     ax_ins.imshow(density_fp, cmap=cmap)
     ax_ins.set_axis_off()
+
+    savefig("bd", itplot)
+    itplot += 1
 
 
 it = 0
@@ -290,7 +323,7 @@ def callback(x, y, proj_level, rfilt):
     ax.axis("off")
     plt.suptitle(f"iteration {it}, objective = {y:.5f}")
     # plt.tight_layout()
-    plt.pause(0.1)
+    pltpause(0.1)
     it += 1
 
 
@@ -301,7 +334,7 @@ opt = no.TopologyOptimizer(
     x0,
     method="nlopt",
     maxiter=20,
-    stopval=None,
+    stopval=stopval,
     args=(1, rfilt),
     options={},
     callback=callback,
@@ -334,8 +367,8 @@ ims = plot_layer(
     lattice, grid, epsilon_bin.real, nper=4, cmap=cmap, show_cell=True, cellstyle="y--"
 )
 plt.axis("off")
+savefig("final_bd", it)
 
-from skimage import measure
 
 from protis.isocontour import get_isocontour
 
@@ -388,3 +421,7 @@ for contour in contours:
 
 
 np.savez("contour.npz", contours=contours, density_bin=density_bin)
+
+
+os.system(f"convert -delay 20 -loop 0 {tmpdir}/bd*.png {tmpdir}/animation_bd.gif")
+os.system(f"convert {tmpdir}/animation_bd.gif {tmpdir}/animation_bd.mp4")

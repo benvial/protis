@@ -29,7 +29,7 @@ def block_anisotropic(a, dim=3):
 
 
 def block_z_anisotropic(axx, axy, ayx, ayy, azz):
-    zer = 0 * axy
+    zer = 0 * axx
     a_list = [
         [axx, axy, zer],
         [ayx, ayy, zer],
