@@ -218,7 +218,7 @@ class Simulation:
         V = bk.zeros(self.lattice.discretization, dtype=bk.complex128)
         V[self.harmonics[0], self.harmonics[1]] = v[:, imode]
         mode = inverse_fourier_transform(V)
-        mode /= bk.max(bk.abs(mode))
+        # mode /= bk.max(bk.abs(mode))
         return mode
 
     def plot(

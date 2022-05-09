@@ -20,8 +20,10 @@ import numpy as np
 
 import protis as pt
 
-# plt.ion()
-# plt.close("all")
+pt.set_backend("scipy")
+
+plt.ion()
+plt.close("all")
 
 
 ##############################################################################
@@ -74,12 +76,12 @@ bands[2 * Nb - 1 : 3 * Nb - 3, 0] = bands[2 * Nb - 1 : 3 * Nb - 3, 1] = np.flipu
 ##############################################################################
 # Calculate the band diagram:
 
-sim = pt.Simulation(lattice, epsilon=epsilon, mu=mu, nh=250)
+sim = pt.Simulation(lattice, epsilon=epsilon, mu=mu, nh=100)
 
 band_diag = []
 for kx, ky in bands:
     sim.k = kx, ky
-    sim.solve(polarization, vectors=False)
+    sim.solve(polarization, vectors=False, sparse=True, neig=6, sigma=1e-12)
     ev_norma = sim.eigenvalues * a / (2 * np.pi)
     band_diag.append(ev_norma)
 # append first value since this is the same point
@@ -110,3 +112,110 @@ plt.axvline(2 * K[-1], c="k", lw=0.3)
 plt.ylabel(r"Frequency $\omega a/2\pi c$")
 plt.tight_layout()
 plt.show()
+
+#
+# ##############################################################################
+# # Berry phase
+# bk = pt.backend
+#
+#
+# def inner(phi1, phi2, coeff, x, y):
+#     return bk.trapz(bk.trapz(bk.conj(phi1) * coeff * phi2, y, axis=-1), x, axis=-1)
+#
+#
+# def moment_x(phi1, phi2, coeff, x, y):
+#     return bk.trapz(bk.trapz(x * bk.conj(phi1) * coeff * phi2, y, axis=-1), x, axis=-1)
+#
+#
+# x, y = lattice.grid
+# x = lattice.grid[0, :, 0]
+# y = lattice.grid[1, 0, :]
+# coeff = sim.epsilon
+#
+# nk = 20
+# nmode = 3
+# Kx = np.linspace(-pt.pi / a, pt.pi / a, nk)
+# Ky = np.linspace(-pt.pi / a, pt.pi / a, nk)
+# thetan_kx = []
+# for ikx, kx in enumerate(Kx):
+#     thetan_ky = []
+#     thetan_ky = bk.zeros((nmode, nk), dtype=complex)
+#     for iky, ky in enumerate(Ky):
+#         print(ikx, iky)
+#         sim.k = kx, ky
+#         sim.solve(polarization, vectors=True, sparse=True, neig=3, sigma=1e-12)
+#         for imode in range(nmode):
+#             phi = sim.get_mode(imode)
+#             norma = inner(phi, phi, coeff, x, y)
+#             phi /= norma**0.5
+#             thetan_ky[imode, iky] = moment_x(phi, phi, coeff, x, y)
+#     thetan_kx.append(bk.trapz(thetan_ky, Ky))
+#
+# thetan_kx = bk.array(thetan_kx)
+#
+# plt.figure()
+# plt.plot(Kx, thetan_kx)
+#
+#
+#
+#
+# ###############################################
+#
+# def inner(phi1, phi2, x, y):
+#     return bk.trapz(bk.trapz(bk.conj(phi1) * coeff * phi2, y, axis=-1), x, axis=-1)
+#
+#
+#
+# nk = 20
+# nmode = 3
+#
+# x, y = lattice.grid
+# x = lattice.grid[0, :, 0]
+# y = lattice.grid[1, 0, :]
+# Kx = np.linspace(-pt.pi / a, pt.pi / a, nk)
+# Ky = np.linspace(-pt.pi / a, pt.pi / a, nk)
+# modes = bk.zeros((nk, nk, nmode,*lattice.discretization), dtype=complex)
+#
+# for ikx, kx in enumerate(Kx):
+#     for iky, ky in enumerate(Ky):
+#         print(ikx, iky)
+#         sim.k = kx, ky
+#         sim.solve(polarization, vectors=True, sparse=True, neig=3, sigma=1e-12)
+#         for imode in range(nmode):
+#             phi = sim.get_mode(imode)
+#             norma = inner(phi, phi, x, y)
+#             phi /= norma**0.5
+#             modes[ikx, iky, imode] = phi
+#
+#
+#
+# Ms = []
+# for ikx, kx in enumerate(Kx):
+#     M = bk.zeros((nk,nmode,nmode), dtype=complex)
+#     for iky, ky in enumerate(Ky):
+#         print(ikx, iky)
+#         for imode in range(nmode):
+#             phi1 = modes[ikx, iky, imode]
+#             for jmode in range(nmode):
+#                 if iky == nk-1:
+#                     break
+#                 phi2 = modes[ikx, iky+1, jmode]
+#                 M[iky,imode,jmode] = inner(phi1, phi2, x, y)
+#     Ms.append(M)
+#
+# thetas = []
+# for ikx, M in enumerate(Ms):
+#     W = bk.eye(nmode)
+#     for iky, ky in enumerate(Ky):
+#         if iky == nk-1:
+#             break
+#         W = W @ M[iky]
+#     w = bk.linalg.eigvals(W)
+#     theta = -bk.imag(bk.log(w))
+#     thetas.append(theta)
+#
+#
+# thetas = bk.array(thetas)
+#
+# plt.figure()
+# plt.plot(Kx, thetas)
