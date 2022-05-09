@@ -62,7 +62,7 @@ test:
     - coverage xml
   coverage: '/TOTAL.*\s([.\d]+)%/'
   artifacts:
-    coverage_report:
+    reports:
       coverage_format: cobertura
       path: coverage.xml
   only:
