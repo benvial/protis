@@ -22,6 +22,8 @@ import protis as pt
 
 pt.set_backend("scipy")
 
+bk = pt.backend
+
 plt.ion()
 plt.close("all")
 
@@ -30,7 +32,7 @@ plt.close("all")
 # Reference results are taken from  :cite:p:`Joannopoulos2008` (Chapter 5 Fig. 2).
 
 a = 1
-lattice = pt.Lattice([[a, 0], [0, a]], discretization=2**9)
+lattice = pt.Lattice([[a, 0], [0, a]], discretization=2**8)
 r = 0.11 * a
 polarization = "TM"
 
@@ -76,7 +78,7 @@ bands[2 * Nb - 1 : 3 * Nb - 3, 0] = bands[2 * Nb - 1 : 3 * Nb - 3, 1] = np.flipu
 ##############################################################################
 # Calculate the band diagram:
 
-sim = pt.Simulation(lattice, epsilon=epsilon, mu=mu, nh=100)
+sim = pt.Simulation(lattice, epsilon=epsilon, mu=mu, nh=51)
 
 band_diag = []
 for kx, ky in bands:
@@ -158,56 +160,60 @@ plt.show()
 #
 #
 #
+
+###############################################
+
+
+def inner(phi1, phi2, coeff, x, y):
+    return bk.trapz(bk.trapz(bk.conj(phi1) * coeff * phi2, y, axis=-1), x, axis=-1)
+
+
+coeff = sim.epsilon
+
+nkx = 20
+nky = 20
+nmode = 3
+
+x, y = lattice.grid
+x = lattice.grid[0, :, 0]
+y = lattice.grid[1, 0, :]
+Kx = np.linspace(-pt.pi / a, pt.pi / a, nkx)
+Ky = np.linspace(-pt.pi / a, pt.pi / a, nky)
+modes = bk.zeros((nkx, nky, nmode, *lattice.discretization), dtype=complex)
+
+for ikx, kx in enumerate(Kx):
+    for iky, ky in enumerate(Ky):
+        print(ikx, iky)
+        sim.k = kx, ky
+        sim.solve(polarization, vectors=True, sparse=True, neig=3, sigma=1e-12)
+        for imode in range(nmode):
+            phi = sim.get_mode(imode)
+            phi *= np.exp(-1j * (kx * x + ky * y))
+            modes[ikx, iky, imode] = phi
 #
-# ###############################################
 #
-# def inner(phi1, phi2, x, y):
-#     return bk.trapz(bk.trapz(bk.conj(phi1) * coeff * phi2, y, axis=-1), x, axis=-1)
-#
-#
-#
-# nk = 20
-# nmode = 3
-#
-# x, y = lattice.grid
-# x = lattice.grid[0, :, 0]
-# y = lattice.grid[1, 0, :]
-# Kx = np.linspace(-pt.pi / a, pt.pi / a, nk)
-# Ky = np.linspace(-pt.pi / a, pt.pi / a, nk)
-# modes = bk.zeros((nk, nk, nmode,*lattice.discretization), dtype=complex)
-#
-# for ikx, kx in enumerate(Kx):
-#     for iky, ky in enumerate(Ky):
-#         print(ikx, iky)
-#         sim.k = kx, ky
-#         sim.solve(polarization, vectors=True, sparse=True, neig=3, sigma=1e-12)
-#         for imode in range(nmode):
-#             phi = sim.get_mode(imode)
-#             norma = inner(phi, phi, x, y)
-#             phi /= norma**0.5
-#             modes[ikx, iky, imode] = phi
-#
-#
+# nmode1 = 1
 #
 # Ms = []
 # for ikx, kx in enumerate(Kx):
-#     M = bk.zeros((nk,nmode,nmode), dtype=complex)
+#     M = bk.zeros((nky, nmode1, nmode1), dtype=complex)
 #     for iky, ky in enumerate(Ky):
 #         print(ikx, iky)
-#         for imode in range(nmode):
+#         for imode in range(nmode1):
 #             phi1 = modes[ikx, iky, imode]
-#             for jmode in range(nmode):
-#                 if iky == nk-1:
+#             for jmode in range(nmode1):
+#                 if iky == nky - 1:
 #                     break
-#                 phi2 = modes[ikx, iky+1, jmode]
-#                 M[iky,imode,jmode] = inner(phi1, phi2, x, y)
+#                 phi2 = modes[ikx, iky + 1, jmode]
+#                 norma = inner(phi1, phi2, coeff, x, y)
+#                 M[iky, imode, jmode] = inner(phi1, phi2, coeff, x, y) / norma**0.5
 #     Ms.append(M)
 #
 # thetas = []
 # for ikx, M in enumerate(Ms):
-#     W = bk.eye(nmode)
+#     W = bk.eye(nmode1)
 #     for iky, ky in enumerate(Ky):
-#         if iky == nk-1:
+#         if iky == nky - 1:
 #             break
 #         W = W @ M[iky]
 #     w = bk.linalg.eigvals(W)
@@ -218,4 +224,33 @@ plt.show()
 # thetas = bk.array(thetas)
 #
 # plt.figure()
-# plt.plot(Kx, thetas)
+# plt.plot(Kx, thetas[:, 0], "o--")
+
+
+nmode1 = 1
+
+Ms = []
+for ikx, kx in enumerate(Kx):
+    M = bk.zeros((nky, nmode1, nmode1), dtype=complex)
+    for iky, ky in enumerate(Ky):
+        print(ikx, iky)
+        for imode in range(nmode1):
+            phi1 = modes[ikx, iky, imode]
+            for jmode in range(nmode1):
+                if iky == nky - 1:
+                    break
+                # phi2 = modes[ikx, iky + 1, jmode]
+                # norma = inner(phi1, phi2, coeff, x, y)
+                dphi2 = modes[ikx, iky + 1, jmode] - modes[ikx, iky, jmode]
+                dphi2 /= Ky[iky + 1] - Ky[iky]
+                norma = inner(phi1, dphi2, coeff, x, y)
+                M[iky, imode, jmode] = (
+                    1j * inner(phi1, dphi2, coeff, x, y) / norma**0.5
+                )
+    Ms.append(M)
+
+Ms = np.array(Ms)
+
+thetas = np.trapz(Ms, Ky, axis=1)
+plt.figure()
+plt.plot(Kx, thetas[:, 0], "o--")
