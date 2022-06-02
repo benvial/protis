@@ -102,12 +102,12 @@ class Simulation:
                     A -= u[1, 0] * self.Kx @ self.Ky + u[0, 1] * self.Ky @ self.Kx
                 else:
                     q = block(q[:2, :2])
-                    u = bk.linalg.inv(q)
                     qxx = get_block(q, 0, 0, self.nh)
                     qxy = get_block(q, 0, 1, self.nh)
                     qyx = get_block(q, 1, 0, self.nh)
                     qyy = get_block(q, 1, 1, self.nh)
 
+                    u = bk.linalg.inv(q)
                     uxx = get_block(u, 0, 0, self.nh)
                     uxy = get_block(u, 0, 1, self.nh)
                     uyx = get_block(u, 1, 0, self.nh)

@@ -93,6 +93,7 @@ def gen_eig(A, B, vectors=True, sparse=False, neig=10, **kwargs):
         C = A / B
         return eig(C, vectors=vectors, hermitian=is_hermitian(C))
     else:
-        invB = bk.linalg.inv(B)
-        C = invB @ A
+        # invB = bk.linalg.inv(B)
+        # C = invB @ A
+        C = bk.linalg.solve(B, A)
         return eig(C, vectors=vectors, hermitian=is_hermitian(C))
