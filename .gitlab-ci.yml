@@ -9,7 +9,7 @@ variables:
 
 
 
-before_script:
+.before-python: &before-python
   ## install os tools
   - apt-get update -q && apt-get install -q -y --no-install-recommends make libgl1-mesa-dev xvfb
   - conda config --set always_yes yes --set changeps1 no
@@ -55,6 +55,8 @@ staging:
 
 
 test:
+  before_script:
+    - *before-python
   script:
     - make install
     - make test-req
