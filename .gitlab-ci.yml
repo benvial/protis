@@ -71,6 +71,8 @@ variables:
 #   only:
 #     - main
 
+
+
 send-snapshot:
   script:
     - if [[ ! $CI_COMMIT_TAG =~ ^v?[0-9]+\.[0-9]+ ]]; then exit 0; fi
