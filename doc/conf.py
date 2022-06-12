@@ -190,6 +190,7 @@ def setup(app):
 html_theme_options = {
     "show_toc_level": 3,
     "show_prev_next": False,
+    "navbar_end": ["navbar-icon-links"],
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
