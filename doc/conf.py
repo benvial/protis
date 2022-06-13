@@ -190,6 +190,7 @@ def setup(app):
 html_theme_options = {
     "show_toc_level": 3,
     "show_prev_next": False,
+    "show_nav_level": 2,
     "navbar_end": ["navbar-icon-links"],
 }
 
