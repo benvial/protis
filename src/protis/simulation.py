@@ -97,7 +97,7 @@ class Simulation:
         else:
             if is_anisotropic(q):
                 if q.shape == (3, 3):
-                    u = bk.linalg.inv(q)
+                    u = bk.linalg.inv(q[:2, :2])
                     A = u[1, 1] * self.Kx @ self.Kx + u[0, 0] * self.Ky @ self.Ky
                     A -= u[1, 0] * self.Kx @ self.Ky + u[0, 1] * self.Ky @ self.Kx
                 else:
@@ -117,14 +117,8 @@ class Simulation:
                     kxuyy = matmuldiag(self.Kx, uyy)
                     kxuyx = matmuldiag(self.Kx, uyx)
                     kyuxy = matmuldiag(self.Ky, uxy)
-                    A = (
-                        matmuldiag(self.Kx.T, kxuyy.T).T
-                        + matmuldiag(self.Ky.T, kyuxx.T).T
-                    )
-                    A -= (
-                        matmuldiag(self.Kx.T, kyuxy.T).T
-                        + matmuldiag(self.Ky.T, kxuyx.T).T
-                    )
+                    A = matmuldiag(self.Kx, kxuyy.T).T + matmuldiag(self.Ky, kyuxx.T).T
+                    A -= matmuldiag(self.Kx, kyuxy.T).T + matmuldiag(self.Ky, kxuyx.T).T
             else:
                 u = bk.linalg.inv(q)
                 # self.A = self.Kx @ u @ self.Kx + self.Ky @ u @ self.Ky
@@ -213,13 +207,88 @@ class Simulation:
         U = bk.hstack(v)
         return gram_schmidt(U)
 
-    def get_mode(self, imode):
-        v = self.eigenvectors
+    def unit_cell_integ(self, u):
+        x, y = self.lattice.grid
+        return bk.trapz(bk.trapz(u, y[0, :], axis=1), x[:, 0], axis=0)
+
+    def phasor(self):
+        x, y = self.lattice.grid
+        kx, ky = self.k
+        return bk.exp(1j * (kx * x + ky * y))
+
+    def get_chi(self, polarization):
+        q = self.epsilon if polarization == "TM" else self.mu
+        if is_scalar(q):
+            return q
+        else:
+            return q[2, 2] if is_anisotropic(q) else q
+
+    def get_xi(self, polarization):
+        q = self.mu if polarization == "TM" else self.epsilon
+
+        if is_scalar(q):
+            return 1 / q
+        else:
+            if is_anisotropic(q):
+                return bk.linalg.inv(q[:2, :2])
+            else:
+                return 1 / q
+
+    def build_Cs(self, phi0, polarization):
+        def matmuldiag(A, B):
+            return bk.einsum("i,ik->ik", bk.array(bk.diag(A)), bk.array(B))
+
+        Kx = bk.array(self.Kx) + 0j
+        Ky = bk.array(self.Ky) + 0j
+        phi0 = bk.array(phi0) + 0j
+
+        q = self.mu_hat if polarization == "TM" else self.epsilon_hat
+        if is_scalar(q):
+            Cs = -1 / q * Kx @ phi0, -1 / q * Ky @ phi0
+        else:
+            if is_anisotropic(q):
+                if q.shape == (3, 3):
+                    u = bk.linalg.inv(q[:2, :2])
+                    Csy = -u[0, 0] * Ky + u[0, 1] * Kx
+                    Csx = u[1, 0] * Ky - u[1, 1] * Kx
+                    Cs = Csx @ phi0, Csy @ phi0
+                else:
+
+                    u = bk.linalg.inv(q)
+                    uxx = get_block(u, 0, 0, self.nh)
+                    uxy = get_block(u, 0, 1, self.nh)
+                    uyx = get_block(u, 1, 0, self.nh)
+                    uyy = get_block(u, 1, 1, self.nh)
+
+                    kyuxx = matmuldiag(Ky, uxx.T)
+                    kxuyy = matmuldiag(Kx, uyy.T)
+                    kxuxy = matmuldiag(Kx, uxy.T)
+                    kyuyx = matmuldiag(Ky, uyx.T)
+
+                    Csy = -kyuxx + kxuxy
+                    Csx = kyuyx - kxuyy
+                    Cs = Csx @ phi0, Csy @ phi0
+            else:
+
+                u = bk.linalg.inv(q)
+                kxu = matmuldiag(Kx, u.T).T
+                kyu = matmuldiag(Ky, u.T).T
+                Cs = -kxu @ phi0, -kyu @ phi0
+
+        Cs = 2 * 1j * bk.stack(Cs).T
+        return Cs
+
+    def normalization(self, mode, polarization):
+        chi = self.get_chi(polarization)
+        return self.unit_cell_integ(chi * mode * (mode))
+
+    def coeff2mode(self, coeff):
         V = bk.zeros(self.lattice.discretization, dtype=bk.complex128)
-        V[self.harmonics[0], self.harmonics[1]] = v[:, imode]
-        mode = inverse_fourier_transform(V)
-        # mode /= bk.max(bk.abs(mode))
-        return mode
+        V[self.harmonics[0], self.harmonics[1]] = coeff
+        return inverse_fourier_transform(V)
+
+    def get_mode(self, imode):
+        return self.coeff2mode(self.eigenvectors[:, imode])
 
     def plot(
         self,
@@ -242,3 +311,56 @@ class Simulation:
             cellstyle,
             **kwargs,
         )
+
+    def _get_hom_tensor(self, phi0, phis1, polarization):
+        phi1x, phi1y = phis1
+        x, y = self.lattice.grid
+        dx = x[1, 0] - x[0, 0]
+        dy = y[0, 1] - y[0, 0]
+        dphi0 = bk.gradient(phi0)
+        dphi0dx = dphi0[0] / dx
+        dphi0dy = dphi0[1] / dy
+        dphi1x = bk.gradient(phi1x)
+        dphi1xdx = dphi1x[0] / dx
+        dphi1xdy = dphi1x[1] / dy
+        dphi1y = bk.gradient(phi1y)
+        dphi1ydx = dphi1y[0] / dx
+        dphi1ydy = dphi1y[1] / dy
+        xi = self.get_xi(polarization)
+        integxx = xi * (phi0 * (phi0) - dphi0dx * (phi1x) + dphi1xdx * (phi0))
+        Txx = self.unit_cell_integ(integxx)
+        integyy = xi * (phi0 * (phi0) - dphi0dy * (phi1y) + dphi1ydy * (phi0))
+        Tyy = self.unit_cell_integ(integyy)
+        integxy = xi * (-dphi0dx * (phi1y) + dphi1ydx * (phi0))
+        Txy = self.unit_cell_integ(integxy)
+        integyx = xi * (-dphi0dy * (phi1x) + dphi1xdy * (phi0))
+        Tyx = self.unit_cell_integ(integyx)
+        # T = bk.array([[Txx, Txy], [Tyx, Tyy]])
+        T = bk.zeros((2, 2), dtype=bk.complex128)
+        T[0, 0] = Txx
+        T[1, 1] = Tyy
+        T[0, 1] = Txy
+        T[1, 0] = Tyx
+        return T
+
+    def get_hfh_tensor(self, imode, polarization):
+
+        ph = self.phasor()
+        k0 = self.eigenvalues[imode]
+        coeffs0 = self.eigenvectors[:, imode]
+        mode0 = self.coeff2mode(coeffs0)
+        mode0 = mode0 * ph
+        norma = self.normalization(mode0, polarization) ** 0.5
+        mode0 = mode0 / norma
+        coeffs0 = coeffs0 / norma
+        # assert np.allclose(normalization(self, mode0, polarization), 1)
+        Cs = self.build_Cs(coeffs0, polarization)
+        M = -self.A + k0**2 * self.B * bk.eye(self.nh)
+        coeffs1 = bk.linalg.solve(M, Cs)
+        modes1 = []
+        for i in range(2):
+            mode1 = self.coeff2mode(coeffs1[:, i])
+            mode1 *= ph
+            modes1.append(mode1)
+        T = self._get_hom_tensor(mode0, modes1, polarization)
+        return bk.real(T)

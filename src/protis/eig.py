@@ -63,8 +63,6 @@ def _gen_eig_scipy_sparse(A, B, vectors=True, neig=10, **kwargs):
 def _gen_eig_torch_sparse(A, B, vectors=True, neig=10, **kwargs):
     if is_scalar(B):
         C = A / B
-        print(C.dtype)
-        print(type(C))
         B1 = bk.array(bk.eye(A.shape[0]) + 0j, dtype=bk.complex128)
         out = bk.lobpcg(A / B, k=neig, B=B1, **kwargs)
     else:
