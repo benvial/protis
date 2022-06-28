@@ -431,7 +431,6 @@ isocontour = get_isocontour(
     bandsx, bandsy, BD[:, :, mode_index], ev_target, method="skimage"
 )
 
-
 plt.figure()
 plt.pcolormesh(bandsx, bandsy, BD[:, :, mode_index])
 plt.axis("scaled")
