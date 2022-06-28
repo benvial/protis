@@ -23,10 +23,11 @@ no = pt.optimize
 plt.close("all")
 plt.ion()
 
+
 polarization = "TE"
 a = 1
 R = 0.25 * a
-nh = 200
+nh = 100
 
 lattice = pt.Lattice([[a, 0], [0, a]], discretization=2**9)
 epsilon = lattice.ones() * 1
@@ -39,16 +40,19 @@ mu = 1
 ################################################################
 # Optimization parameters
 Nx, Ny = lattice.discretization
-# plots = True
+plots = False
 rfilt = Nx / 50
 maxiter = 40
 threshold = (0, 12)
-stopval = 1e-6
+stopval = 1e-4
+# stopval = None
 eps_min, eps_max = 1, 9
+point = "Gamma"
 mode_index = 3
-point = "X"
-Txx_target = -3
-Tyy_target = 11
+Txx_target = 3
+Tyy_target = -3
+Txy_target = 0
+Tyx_target = 0
 
 x, y = lattice.grid
 
@@ -227,14 +231,17 @@ def simu(x, proj_level=None, rfilt=0, sym=True):
     sim.solve(polarization)
     T = sim.get_hfh_tensor(mode_index, polarization)
     # objective = bk.abs(1 + T[1, 1].real / T[0, 0].real) ** 2
-
+    #
     objective = bk.abs(T[0, 0].real - Txx_target) ** 2
     objective += bk.abs(T[1, 1].real - Tyy_target) ** 2
+    objective += bk.abs(T[0, 1].real - Txy_target) ** 2
+    objective += bk.abs(T[1, 0].real - Tyx_target) ** 2
 
-    objective += abs(T[1, 0]) ** 2 + abs(T[0, 1]) ** 2
+    # objective = -T[0, 0].real/T[1,1].real
+    # objective = bk.abs(T[0, 0].real)**2
+
     nev = sim.eigenvalues / norm_eigval
     alpha = 0.01
-
     # objective -= alpha * bk.abs(nev[mode_index] - nev[mode_index + 1]) ** 2
     # objective -= alpha * bk.abs(nev[mode_index - 1] - nev[mode_index]) ** 2
     is_grad_pass = x.grad_fn is not None
@@ -252,28 +259,61 @@ def simu(x, proj_level=None, rfilt=0, sym=True):
 it = 0
 
 
+fig, ax = plt.subplots(figsize=(3, 3))
+
+
 def callback(x, y, proj_level, rfilt):
     global it
 
-    dens = bk.reshape(x, lattice.discretization)
-    dens = symmetrize_pattern(dens)
-    density_f = no.apply_filter(dens, rfilt)
-    density_fp = (
-        no.project(density_f, proj_level) if proj_level is not None else density_f
-    )
-    epsilon = no.simp(density_fp, eps_min, eps_max, p=1)
+    if plots:
 
-    plt.clf()
+        dens = bk.reshape(x, lattice.discretization)
+        dens = symmetrize_pattern(dens)
+        density_f = no.apply_filter(dens, rfilt)
+        density_fp = (
+            no.project(density_f, proj_level) if proj_level is not None else density_f
+        )
+        epsilon = no.simp(density_fp, eps_min, eps_max, p=1)
 
-    plt.pcolormesh(density_fp, cmap="Greens", vmin=0, vmax=1)
-    plt.colorbar()
-    plt.axis("scaled")
-    plt.axis("off")
-    plt.title(
-        rf"$T_{{xx}} = {T[0,0]:0.3f}$, $T_{{yy}} = {T[1,1]:0.3f}$, $\Phi={y:0.3e}$"
-    )
-    plt.tight_layout()
-    plt.pause(0.01)
+        plt.clf()
+        ax = plt.gca()
+        _x, _y = lattice.grid
+
+        plt.pcolormesh(_x, _y, density_fp, cmap="Greens", vmin=0, vmax=1)
+        plt.colorbar()
+        plt.axis("scaled")
+        plt.axis("off")
+        plt.title(rf"$\Phi={y:0.3e}$", loc="left")
+
+        xmatrix, ymatrix = 0.5, 1.06
+        dxmatrix = 0.11
+        dymatrix = 0.06
+        ax.annotate(f"T = ", (xmatrix, ymatrix), xycoords="axes fraction")
+        ax.annotate(
+            f"[",
+            (xmatrix + dxmatrix / 1.7, ymatrix - dymatrix / 3),
+            fontsize=18,
+            xycoords="axes fraction",
+        )
+        ax.annotate(
+            f"]",
+            (xmatrix + dxmatrix * 3.2, ymatrix - dymatrix / 3),
+            fontsize=18,
+            xycoords="axes fraction",
+        )
+        ax.annotate(
+            f"{T[0, 0]:0.3f}    {T[0, 1]:0.3f}",
+            (xmatrix + dxmatrix, ymatrix + dymatrix / 2),
+            xycoords="axes fraction",
+        )
+        ax.annotate(
+            f"{T[1, 0]:0.3f}    {T[1, 1]:0.3f}",
+            (xmatrix + dxmatrix, ymatrix - dymatrix / 2),
+            xycoords="axes fraction",
+        )
+
+        plt.tight_layout()
+        plt.pause(0.01)
 
     it += 1
     return y
@@ -332,3 +372,70 @@ sim.k = propagation_vector
 BD = compute_bands(sim)
 plot_bd(BD)
 hom = compute_hfhom(sim, [point], [mode_index], polarization)
+
+pt.set_backend("numpy")
+
+bk = pt.backend
+
+plt.figure()
+sim.plot(sim.epsilon.real, nper=(3, 3), cmap="Greens")
+plt.axis("off")
+
+sim.k = propagation_vector
+sim.solve(polarization)
+
+eigenvalues_final = sim.eigenvalues
+eigenvectors_final = sim.eigenvectors
+
+
+mode = sim.eigenvectors[:, mode_index]
+mode = sim.coeff2mode(mode)
+mode *= sim.phasor()
+mode /= sim.normalization(mode, polarization) ** 0.5
+
+plt.figure()
+ims = sim.plot(mode.real, nper=1, cmap="RdBu_r")
+plt.colorbar(ims[0])
+sim.plot(sim.epsilon.real, nper=1, cmap="Greys", alpha=0.2)
+plt.axis("off")
+
+
+from protis.isocontour import get_isocontour
+
+
+def model(bands, nh=100):
+    ev_band = []
+    for kx, ky in bands:
+        print(kx, ky)
+        sim.k = kx, ky
+        sim.solve(polarization, vectors=False)
+        ev_norma = sim.eigenvalues / norm_eigval
+        ev_band.append(ev_norma)
+    return ev_band
+
+
+Nbz = 51
+bandsx = bk.linspace(-pt.pi / a, pt.pi / a, Nbz)
+bandsy = bk.linspace(-pt.pi / a, pt.pi / a, Nbz)
+bandsx1, bandsy1 = bk.meshgrid(bandsx, bandsy, indexing="ij")
+bands = bk.vstack([bandsx1.ravel(), bandsy1.ravel()]).T
+
+BD = model(bands)
+BD = bk.array(BD)
+
+BD = BD.reshape(Nbz, Nbz, sim.nh)
+
+
+ev_target = 1 * eigenvalues_final[mode_index] / norm_eigval
+isocontour = get_isocontour(
+    bandsx, bandsy, BD[:, :, mode_index], ev_target, method="skimage"
+)
+
+
+plt.figure()
+plt.pcolormesh(bandsx, bandsy, BD[:, :, mode_index])
+plt.axis("scaled")
+plt.colorbar()
+for contour in isocontour:
+    plt.plot(contour[:, 1], contour[:, 0], "-r")
+plt.tight_layout()

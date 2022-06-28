@@ -178,11 +178,12 @@ def _get_iso(x, y, im, level):
 
 def _get_iso_skimage(x, y, im, level):
     contours = measure.find_contours(im, level)
-    contours = bk.array(contours)
+    # contours = bk.array(contours)
     if len(contours) == 0:
         return contours
-    contours[:, :, 0] = (x.max() - x.min()) * contours[:, :, 0] / len(x) + x.min()
-    contours[:, :, 1] = (y.max() - y.min()) * contours[:, :, 1] / len(y) + y.min()
+    for ic, ctr in enumerate(contours):
+        contours[ic][:, 0] = (x.max() - x.min()) * ctr[:, 0] / len(x) + x.min()
+        contours[ic][:, 1] = (y.max() - y.min()) * ctr[:, 1] / len(y) + y.min()
     return contours
 
 
