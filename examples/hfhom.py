@@ -24,23 +24,18 @@ plt.close("all")
 plt.ion()
 
 
-polarization = "TE"
+polarization = "TM"
 a = 1
 R = 0.25 * a
 nh = 100
 
 lattice = pt.Lattice([[a, 0], [0, a]], discretization=2**9)
-epsilon = lattice.ones() * 1
-# rod = lattice.circle(center=(0.5, 0.5), radius=0.2)
-rod = lattice.ellipse(center=(0.5, 0.5), radii=(R, R * 1.5), rotate=180 / 6)
-epsilon[rod] = 9
-mu = 1
 
 
 ################################################################
 # Optimization parameters
 Nx, Ny = lattice.discretization
-plots = False
+plots = True
 rfilt = Nx / 50
 maxiter = 40
 threshold = (0, 12)
@@ -48,17 +43,24 @@ stopval = 1e-4
 # stopval = None
 eps_min, eps_max = 1, 9
 point = "Gamma"
-mode_index = 3
-Txx_target = 3
-Tyy_target = -3
+mode_index = 5
+Txx_target = 9
+Tyy_target = -9
 Txy_target = 0
 Tyx_target = 0
 
 x, y = lattice.grid
 
-sim = pt.Simulation(lattice, epsilon=epsilon, mu=mu, nh=nh)
-
 norm_eigval = (2 * np.pi) / a
+
+
+epsilon = lattice.ones() * eps_max
+# rod = lattice.circle(center=(0.5, 0.5), radius=0.2)
+rod = lattice.ellipse(center=(0.5, 0.5), radii=(R, R * 1.5), rotate=180 / 6)
+epsilon[rod] = eps_min
+mu = 1
+
+sim = pt.Simulation(lattice, epsilon=epsilon, mu=mu, nh=nh)
 
 ##############################################################################
 
@@ -423,7 +425,7 @@ bands = bk.vstack([bandsx1.ravel(), bandsy1.ravel()]).T
 BD = model(bands)
 BD = bk.array(BD)
 
-BD = BD.reshape(Nbz, Nbz, sim.nh)
+BD = BD.reshape(Nbz, Nbz, sim.nh).real
 
 
 ev_target = 1 * eigenvalues_final[mode_index] / norm_eigval
