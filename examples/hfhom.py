@@ -24,10 +24,10 @@ plt.close("all")
 plt.ion()
 
 
-polarization = "TM"
+polarization = "TE"
 a = 1
-R = 0.25 * a
-nh = 100
+R = 0.1 * a
+nh = 300
 
 lattice = pt.Lattice([[a, 0], [0, a]], discretization=2**9)
 
@@ -43,9 +43,9 @@ stopval = 1e-4
 # stopval = None
 eps_min, eps_max = 1, 9
 point = "Gamma"
-mode_index = 5
-Txx_target = 9
-Tyy_target = -9
+mode_index = 1
+Txx_target = 0
+Tyy_target = -5
 Txy_target = 0
 Tyx_target = 0
 
@@ -405,7 +405,7 @@ plt.axis("off")
 from protis.isocontour import get_isocontour
 
 
-def model(bands, nh=100):
+def model(bands, nh=nh):
     ev_band = []
     for kx, ky in bands:
         print(kx, ky)
@@ -430,13 +430,15 @@ BD = BD.reshape(Nbz, Nbz, sim.nh).real
 
 ev_target = 1 * eigenvalues_final[mode_index] / norm_eigval
 isocontour = get_isocontour(
-    bandsx, bandsy, BD[:, :, mode_index], ev_target, method="skimage"
+    bandsx, bandsy, BD[:, :, mode_index].T, ev_target, method="skimage"
 )
 
-plt.figure()
-plt.pcolormesh(bandsx, bandsy, BD[:, :, mode_index])
+plt.figure(figsize=(3.5, 2.8))
+plt.pcolormesh(bandsx * a / pt.pi, bandsy * a / pt.pi, BD[:, :, mode_index].T)
 plt.axis("scaled")
 plt.colorbar()
 for contour in isocontour:
-    plt.plot(contour[:, 1], contour[:, 0], "-r")
+    plt.plot(contour[:, 1] * a / pt.pi, contour[:, 0] * a / pt.pi, "-r")
+plt.xlabel("$k_x$ ($\pi/a$)")
+plt.ylabel("$k_y$ ($\pi/a$)")
 plt.tight_layout()
