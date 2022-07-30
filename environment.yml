@@ -3,19 +3,17 @@ channels:
   - conda-forge
   - pytorch
 dependencies:
-  - python=3.9
+  - python>=3.8
   - pip
   - numpy
   - scipy
   - matplotlib-base
-  - scikit-image
   - shapely
   - joblib
   - colorlog
   - psutil
   - ipython
   - nlopt
-  - matplotlib-base
   - pytorch
   - magma
   - cudatoolkit=10.2
@@ -23,7 +21,7 @@ dependencies:
   - pythreejs
   - ipyvtklink
   - panel
+  - autograd
   - pip:
-    - autograd-latest
-    - nannos
+    - nannos>=2.5.0
     - git+https://gitlab.com/protis/protis.git
