@@ -27,7 +27,7 @@ plt.ion()
 polarization = "TE"
 a = 1
 R = 0.1 * a
-nh = 300
+nh = 200
 
 lattice = pt.Lattice([[a, 0], [0, a]], discretization=2**9)
 
@@ -37,17 +37,18 @@ lattice = pt.Lattice([[a, 0], [0, a]], discretization=2**9)
 Nx, Ny = lattice.discretization
 plots = True
 rfilt = Nx / 50
-maxiter = 40
+maxiter = 20
 threshold = (0, 12)
 stopval = 1e-4
 # stopval = None
 eps_min, eps_max = 1, 9
 point = "Gamma"
-mode_index = 1
-Txx_target = 0
-Tyy_target = -5
+mode_index = 4
+Txx_target = -7
+Tyy_target = -7
 Txy_target = 0
 Tyx_target = 0
+hyperbolic_target = False
 
 x, y = lattice.grid
 
@@ -232,12 +233,15 @@ def simu(x, proj_level=None, rfilt=0, sym=True):
     sim.k = propagation_vector
     sim.solve(polarization)
     T = sim.get_hfh_tensor(mode_index, polarization)
-    # objective = bk.abs(1 + T[1, 1].real / T[0, 0].real) ** 2
-    #
-    objective = bk.abs(T[0, 0].real - Txx_target) ** 2
-    objective += bk.abs(T[1, 1].real - Tyy_target) ** 2
-    objective += bk.abs(T[0, 1].real - Txy_target) ** 2
-    objective += bk.abs(T[1, 0].real - Tyx_target) ** 2
+
+    if hyperbolic_target:
+
+        objective = bk.abs(1 + T[1, 1].real / T[0, 0].real) ** 2
+    else:
+        objective = bk.abs(T[0, 0].real - Txx_target) ** 2
+        objective += bk.abs(T[1, 1].real - Tyy_target) ** 2
+        objective += bk.abs(T[0, 1].real - Txy_target) ** 2
+        objective += bk.abs(T[1, 0].real - Tyx_target) ** 2
 
     # objective = -T[0, 0].real/T[1,1].real
     # objective = bk.abs(T[0, 0].real)**2
@@ -333,7 +337,7 @@ R = 0.2
 # rod = lattice.circle(center=(0.5, 0.5), radius=0.2)
 rod = lattice.ellipse(center=(0.5, 0.5), radii=(R, R * 1), rotate=0 * 180 / 6)
 x0[rod] = 0
-x0 = 1 - x0
+# x0 = 1 - x0
 x0 = bk.real(x0).ravel()
 
 
