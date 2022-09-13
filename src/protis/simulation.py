@@ -326,29 +326,38 @@ class Simulation:
         dphi1y = bk.gradient(phi1y)
         dphi1ydx = dphi1y[0] / dx
         dphi1ydy = dphi1y[1] / dy
-        xi = self.get_xi(polarization) * self.lattice.ones()
+        xi = self.get_xi(polarization)
 
-        # integxx = xi * (phi0 * bk.conj(phi0) - dphi0dx * bk.conj(phi1x) + dphi1xdx * bk.conj(phi0))
-        # Txx = self.unit_cell_integ(integxx)
-        # integyy = xi * (phi0 * bk.conj(phi0) - dphi0dy * bk.conj(phi1y) + dphi1ydy * bk.conj(phi0))
-        # Tyy = self.unit_cell_integ(integyy)
-        # integxy = xi * (-dphi0dx * bk.conj(phi1y) + dphi1ydx * bk.conj(phi0))
-        # Txy = self.unit_cell_integ(integxy)
-        # integyx = xi * (-dphi0dy * bk.conj(phi1x) + dphi1xdy * bk.conj(phi0))
-        # Tyx = self.unit_cell_integ(integyx)
+        def _conj(x):
+            # return bk.conj(x)
+            return x
 
-        dxi = bk.gradient(xi)
-        dxidx = dxi[0] / dx
-        dxidy = dxi[1] / dy
-
-        integxx = xi * (phi0 * (phi0) + 2 * dphi1xdx * (phi0)) + dxidx * phi1x * (phi0)
+        integxx = xi * (
+            phi0 * _conj(phi0) - dphi0dx * _conj(phi1x) + dphi1xdx * _conj(phi0)
+        )
         Txx = self.unit_cell_integ(integxx)
-        integyy = xi * (phi0 * (phi0) + 2 * dphi1ydy * (phi0)) + dxidy * phi1y * (phi0)
+        integyy = xi * (
+            phi0 * _conj(phi0) - dphi0dy * _conj(phi1y) + dphi1ydy * _conj(phi0)
+        )
         Tyy = self.unit_cell_integ(integyy)
-        integxy = 2 * xi * dphi1ydx * (phi0) + dxidx * phi1y * (phi0)
+        integxy = xi * (-dphi0dx * _conj(phi1y) + dphi1ydx * _conj(phi0))
         Txy = self.unit_cell_integ(integxy)
-        integyx = 2 * xi * dphi1xdy * (phi0) + dxidy * phi1x * (phi0)
+        integyx = xi * (-dphi0dy * _conj(phi1x) + dphi1xdy * _conj(phi0))
         Tyx = self.unit_cell_integ(integyx)
+
+        # xi = self.get_xi(polarization) * self.lattice.ones()
+        # dxi = bk.gradient(xi)
+        # dxidx = dxi[0] / dx
+        # dxidy = dxi[1] / dy
+
+        # integxx = xi * (phi0 * (phi0) + 2 * dphi1xdx * (phi0)) + dxidx * phi1x * (phi0)
+        # Txx = self.unit_cell_integ(integxx)
+        # integyy = xi * (phi0 * (phi0) + 2 * dphi1ydy * (phi0)) + dxidy * phi1y * (phi0)
+        # Tyy = self.unit_cell_integ(integyy)
+        # integxy = 2 * xi * dphi1ydx * (phi0) + dxidx * phi1y * (phi0)
+        # Txy = self.unit_cell_integ(integxy)
+        # integyx = 2 * xi * dphi1xdy * (phi0) + dxidy * phi1x * (phi0)
+        # Tyx = self.unit_cell_integ(integyx)
 
         # T = bk.array([[Txx, Txy], [Tyx, Tyy]])
         T = bk.zeros((2, 2), dtype=bk.complex128)

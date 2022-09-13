@@ -27,7 +27,7 @@ plt.ion()
 polarization = "TE"
 a = 1
 R = 0.1 * a
-nh = 200
+nh = 150
 
 lattice = pt.Lattice([[a, 0], [0, a]], discretization=2**9)
 
@@ -41,14 +41,16 @@ maxiter = 20
 threshold = (0, 12)
 stopval = 1e-4
 # stopval = None
-eps_min, eps_max = 1, 9
-point = "Gamma"
-mode_index = 4
-Txx_target = -7
-Tyy_target = -7
+eps_min, eps_max = 1, 10
+point = "M"
+mode_index = 8
+Txx_target = -1
+Tyy_target = 1
 Txy_target = 0
 Tyx_target = 0
 hyperbolic_target = False
+
+basename = f"point_{point}_mode_{mode_index}_target_{Txx_target}_{Txy_target}_{Tyy_target}_{Tyx_target}"
 
 x, y = lattice.grid
 
@@ -78,6 +80,22 @@ bands[2 * Nb - 1 : 3 * Nb - 3, 0] = bands[2 * Nb - 1 : 3 * Nb - 3, 1] = bk.flipu
 Nhom = int(Nb / 2)
 
 n_eig_hom = 6
+
+
+nvar = Nx * Ny
+x0 = bk.array(np.random.rand(nvar))
+x0 = bk.reshape(x0, lattice.discretization)
+x0 = no.apply_filter(x0, 10 * rfilt)
+x0 = no.project(x0, 2**10)
+# x0 = symmetrize_pattern(x0).ravel()
+
+x0 = lattice.ones()
+R = 0.2
+# rod = lattice.circle(center=(0.5, 0.5), radius=0.2)
+rod = lattice.ellipse(center=(0.5, 0.5), radii=(R, R * 1), rotate=0 * 180 / 6)
+x0[rod] = 0
+x0 = 1 - x0
+x0 = bk.real(x0).ravel()
 ##############################################################################
 # Calculate the band diagram:
 
@@ -325,22 +343,6 @@ def callback(x, y, proj_level, rfilt):
     return y
 
 
-nvar = Nx * Ny
-x0 = bk.array(np.random.rand(nvar))
-x0 = bk.reshape(x0, lattice.discretization)
-x0 = no.apply_filter(x0, 10 * rfilt)
-x0 = no.project(x0, 2**10)
-x0 = symmetrize_pattern(x0).ravel()
-
-x0 = lattice.ones()
-R = 0.2
-# rod = lattice.circle(center=(0.5, 0.5), radius=0.2)
-rod = lattice.ellipse(center=(0.5, 0.5), radii=(R, R * 1), rotate=0 * 180 / 6)
-x0[rod] = 0
-# x0 = 1 - x0
-x0 = bk.real(x0).ravel()
-
-
 opt = no.TopologyOptimizer(
     simu,
     x0,
@@ -369,6 +371,8 @@ xbin = xbin.ravel()
 objfinal = simu(xbin, sym=False)
 callback(xbin, objfinal, None, 0)
 
+plt.savefig(f"unit_cell_{basename}.png")
+
 
 xbin_array = bk.reshape(xbin, lattice.discretization)
 
@@ -379,6 +383,8 @@ BD = compute_bands(sim)
 plot_bd(BD)
 hom = compute_hfhom(sim, [point], [mode_index], polarization)
 
+plt.savefig(f"bd_{basename}.png")
+
 pt.set_backend("numpy")
 
 bk = pt.backend
@@ -386,6 +392,7 @@ bk = pt.backend
 plt.figure()
 sim.plot(sim.epsilon.real, nper=(3, 3), cmap="Greens")
 plt.axis("off")
+plt.savefig(f"array_{basename}.png")
 
 sim.k = propagation_vector
 sim.solve(polarization)
@@ -394,16 +401,21 @@ eigenvalues_final = sim.eigenvalues
 eigenvectors_final = sim.eigenvectors
 
 
-mode = sim.eigenvectors[:, mode_index]
-mode = sim.coeff2mode(mode)
+mode = sim.get_mode(mode_index)
 mode *= sim.phasor()
 mode /= sim.normalization(mode, polarization) ** 0.5
 
-plt.figure()
+plt.figure(figsize=(2.4, 2))
 ims = sim.plot(mode.real, nper=1, cmap="RdBu_r")
 plt.colorbar(ims[0])
 sim.plot(sim.epsilon.real, nper=1, cmap="Greys", alpha=0.2)
+evalnorm = eigenvalues_final[mode_index].real / norm_eigval
+plt.title(f"point {point}, mode {mode_index}, $\omega={evalnorm:0.2f}\omega_0$")
+plt.axis("scaled")
 plt.axis("off")
+plt.tight_layout()
+
+plt.savefig(f"mode_{basename}.png")
 
 
 from protis.isocontour import get_isocontour
@@ -446,3 +458,5 @@ for contour in isocontour:
 plt.xlabel("$k_x$ ($\pi/a$)")
 plt.ylabel("$k_y$ ($\pi/a$)")
 plt.tight_layout()
+
+plt.savefig(f"iso_{basename}.png")
