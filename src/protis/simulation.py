@@ -284,7 +284,8 @@ class Simulation:
 
     def coeff2mode(self, coeff):
         V = bk.zeros(self.lattice.discretization, dtype=bk.complex128)
-        V[self.harmonics[0], self.harmonics[1]] = coeff
+        V = bk.array(V)
+        V[self.harmonics[0], self.harmonics[1]] = bk.array(coeff)
         return inverse_fourier_transform(V)
 
     def get_mode(self, imode):
@@ -379,7 +380,7 @@ class Simulation:
         coeffs0 = coeffs0 / norma
         # assert np.allclose(normalization(self, mode0, polarization), 1)
         Cs = self.build_Cs(coeffs0, polarization)
-        M = -self.A + k0**2 * self.B * bk.eye(self.nh)
+        M = -self.A + k0**2 * self.B * bk.array(bk.eye(self.nh))
         coeffs1 = bk.linalg.solve(M, Cs)
         modes1 = []
         for i in range(2):
