@@ -15,13 +15,16 @@ dependencies:
   - ipython
   - nlopt
   - pytorch
+  - pytorch-gpu
+  - jax
+  - jaxlib
   - magma
-  - cudatoolkit=10.2
   - pyvista
   - pythreejs
   - ipyvtklink
   - panel
   - autograd
+  - scikit-image
   - pip:
     - nannos>=2.5.0
     - git+https://gitlab.com/protis/protis.git
