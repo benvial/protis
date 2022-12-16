@@ -61,6 +61,7 @@ staging:
 
 test:
   stage: test
+  image: continuumio/miniconda3:latest
   before_script:
     - *before-python
   script:
