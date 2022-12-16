@@ -1,21 +1,21 @@
 
-.. |release_badge| image:: https://img.shields.io/endpoint?url=https://gitlab.com/protis/protis/-/jobs/artifacts/master/raw/logobadge.json?job=badge
+.. |release_badge| image:: https://img.shields.io/endpoint?url=https://gitlab.com/protis/protis/-/jobs/artifacts/main/raw/logobadge.json?job=badge
   :target: https://gitlab.com/protis/protis/-/releases
   :alt: Release
 
-.. |GL_CI| image:: https://img.shields.io/gitlab/pipeline/protis/protis/master?l  
-  :target: https://gitlab.com/protis/protis/commits/master
+.. |GL_CI| image:: https://img.shields.io/gitlab/pipeline/protis/protis/main?logo=gitlab&labelColor=grey&style=for-the-badge
+  :target: https://gitlab.com/protis/protis/commits/main
   :alt: pipeline status
 
-.. |conda| image:: https://img.shields.io/conda/vn/conda-forge/protis?logo=conda-forge&color=CD5C5C&logoColor=white&style=for-the-badge   
-  :target: https://anaconda.org/conda-forge/protis
-  :alt: Conda (channel only)
+.. .. |conda| image:: https://img.shields.io/conda/vn/conda-forge/protis?logo=conda-forge&color=CD5C5C&logoColor=white&style=for-the-badge   
+..   :target: https://anaconda.org/conda-forge/protis
+..   :alt: Conda (channel only)
 
-.. |conda_dl| image:: https://img.shields.io/conda/dn/conda-forge/protis?logo=conda-forge&logoColor=white&style=for-the-badge
-  :alt: Conda
+.. .. |conda_dl| image:: https://img.shields.io/conda/dn/conda-forge/protis?logo=conda-forge&logoColor=white&style=for-the-badge
+..   :alt: Conda
 
-.. |conda_platform| image:: https://img.shields.io/conda/pn/conda-forge/protis?logo=conda-forge&logoColor=white&style=for-the-badge
-  :alt: Conda
+.. .. |conda_platform| image:: https://img.shields.io/conda/pn/conda-forge/protis?logo=conda-forge&logoColor=white&style=for-the-badge
+..   :alt: Conda
 
 
 .. |pip| image:: https://img.shields.io/pypi/v/protis?color=blue&logo=pypi&logoColor=e9d672&style=for-the-badge
@@ -31,15 +31,15 @@
 .. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg?logo=python&logoColor=e9d672&style=for-the-badge
   :alt: Code style: black
  
-.. |coverage| image:: https://img.shields.io/gitlab/coverage/protis/protis/master?logo=python&logoColor=e9d672&style=for-the-badge
-  :target: https://gitlab.com/protis/protis/commits/master
+.. |coverage| image:: https://img.shields.io/gitlab/coverage/protis/protis/main?logo=python&logoColor=e9d672&style=for-the-badge
+  :target: https://gitlab.com/protis/protis/commits/main
   :alt: coverage report 
   
 .. |zenodo| image:: https://img.shields.io/badge/DOI-10.5281/zenodo.6636140-dd7d54?logo=google-scholar&logoColor=dd7d54&style=for-the-badge
   :target: https://doi.org/10.5281/zenodo.6636140
  
 .. |licence| image:: https://img.shields.io/badge/license-GPLv3-blue?color=dd7d54&logo=open-access&logoColor=dd7d54&style=for-the-badge
-  :target: https://gitlab.com/protis/protis/-/blob/master/LICENCE.txt
+  :target: https://gitlab.com/protis/protis/-/blob/main/LICENCE.txt
   :alt: license
 
 +----------------------+----------------------+----------------------+
