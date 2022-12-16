@@ -19,7 +19,7 @@ stages:
   - apt-get update -q && apt-get install -q -y --no-install-recommends make libgl1-mesa-dev xvfb
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
-  - sed -i 's/name: protis/name: base/g' environment.yml
+  - sed -i 's/name protis/name base/g' environment.yml
   - conda install mamba
   - mamba env update -n base -f environment.yml
   # - conda env create -f environment.yml
