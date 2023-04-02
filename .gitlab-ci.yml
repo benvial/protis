@@ -11,7 +11,7 @@ stages:
   - badge
   - zenodo
   - trigdoc
-  # - trigdocker
+  - trigdocker
   - test
 
 .before-python: &before-python
@@ -59,9 +59,16 @@ staging:
     - main
 
 
+container:
+  stage: trigdocker
+  trigger: nannos/docker
+  only:
+    - tags
+
+
 test:
   stage: test
-  image: continuumio/miniconda3:latest
+  image: benvial/protis:latest
   before_script:
     - *before-python
   script:

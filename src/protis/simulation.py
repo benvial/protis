@@ -243,8 +243,12 @@ class Simulation:
         phi0 = bk.array(phi0) + 0j
 
         q = self.mu_hat if polarization == "TM" else self.epsilon_hat
+
+        self.mu_hat = self._get_toeplitz_matrix(self.mu)
+        a = 1 / self.mu if polarization == "TM" else 1 / self.epsilon
+        ahat = self._get_toeplitz_matrix(a)
         if is_scalar(q):
-            Cs = -1 / q * Kx @ phi0, -1 / q * Ky @ phi0
+            Cs = 1 / q * Kx @ phi0, 1 / q * Ky @ phi0
         else:
             if is_anisotropic(q):
                 if q.shape == (3, 3):
@@ -269,18 +273,45 @@ class Simulation:
                     Csx = kyuyx - kxuyy
                     Cs = Csx @ phi0, Csy @ phi0
             else:
-
                 u = bk.linalg.inv(q)
                 kxu = matmuldiag(Kx, u.T).T
                 kyu = matmuldiag(Ky, u.T).T
-                Cs = -kxu @ phi0, -kyu @ phi0
+                ukx = matmuldiag(Kx, u)
+                kyu = matmuldiag(Ky, u)
+                # # kxu = matmuldiag(u,Kx)
+                # # kyu = matmuldiag(u,Ky)
 
-        Cs = 2 * 1j * bk.stack(Cs).T
+                # # ukx = matmuldiag(u, Kx)
+
+                # out = 1j * (-1 * Kx @ u -2*u @ Kx) @ phi0
+                # # out = 1j *(-1 * kxu +1*ukx) @ phi0
+
+                # x, y = self.lattice.grid
+                # dx = x[1, 0] - x[0, 0]
+                # dy = y[0, 1] - y[0, 0]
+
+                # p = 1/self.mu if polarization == "TM" else 1/self.epsilon
+
+                # dp = bk.gradient(p)
+                # dp = dp[0] / dx
+                # dphat = self._get_toeplitz_matrix(dp)
+
+                # # out = (-2*1j *  kxu - 1*dphat) @ phi0
+                # # out = (-bk.linalg.inv(dphat)) @ phi0
+                # # out = (- 1j*Kx@u) @ phi0
+                # Cs = out, -2 * 1j * kyu @ phi0
+
+                Cs = (kxu + ukx) @ phi0, kyu @ phi0
+
+                Cs = 1 * ahat @ (Kx @ phi0) + Kx @ (ahat @ phi0), kyu @ phi0
+                # Cs = -2 * 1j * u @ (Kx @ phi0) + 1j * (Kx @ u) @ phi0, kyu @ phi0
+
+        Cs = -1j * bk.stack(Cs).T
         return Cs
 
     def normalization(self, mode, polarization):
         chi = self.get_chi(polarization)
-        return self.unit_cell_integ(chi * mode * (mode))
+        return self.unit_cell_integ(chi * mode * mode) ** 0.5
 
     def coeff2mode(self, coeff):
         V = bk.zeros(self.lattice.discretization, dtype=bk.complex128)
@@ -314,10 +345,14 @@ class Simulation:
         )
 
     def _get_hom_tensor(self, phi0, phis1, polarization):
+
+        # Kx = bk.array(self.Kx) + 0j
+        # Ky = bk.array(self.Ky) + 0j
         phi1x, phi1y = phis1
         x, y = self.lattice.grid
         dx = x[1, 0] - x[0, 0]
         dy = y[0, 1] - y[0, 0]
+
         dphi0 = bk.gradient(phi0)
         dphi0dx = dphi0[0] / dx
         dphi0dy = dphi0[1] / dy
@@ -327,40 +362,18 @@ class Simulation:
         dphi1y = bk.gradient(phi1y)
         dphi1ydx = dphi1y[0] / dx
         dphi1ydy = dphi1y[1] / dy
+
         xi = self.get_xi(polarization)
 
-        def _conj(x):
-            # return bk.conj(x)
-            return x
-
-        integxx = xi * (
-            phi0 * _conj(phi0) - dphi0dx * _conj(phi1x) + dphi1xdx * _conj(phi0)
-        )
+        integxx = xi * (phi0**2 - dphi0dx * phi1x + dphi1xdx * phi0)
         Txx = self.unit_cell_integ(integxx)
-        integyy = xi * (
-            phi0 * _conj(phi0) - dphi0dy * _conj(phi1y) + dphi1ydy * _conj(phi0)
-        )
+        integyy = xi * (phi0**2 - dphi0dy * phi1y + dphi1ydy * phi0)
         Tyy = self.unit_cell_integ(integyy)
-        integxy = xi * (-dphi0dx * _conj(phi1y) + dphi1ydx * _conj(phi0))
+        integxy = xi * (-dphi0dx * phi1y + dphi1ydx * phi0)
         Txy = self.unit_cell_integ(integxy)
-        integyx = xi * (-dphi0dy * _conj(phi1x) + dphi1xdy * _conj(phi0))
+        integyx = xi * (-dphi0dy * phi1x + dphi1xdy * phi0)
         Tyx = self.unit_cell_integ(integyx)
 
-        # xi = self.get_xi(polarization) * self.lattice.ones()
-        # dxi = bk.gradient(xi)
-        # dxidx = dxi[0] / dx
-        # dxidy = dxi[1] / dy
-
-        # integxx = xi * (phi0 * (phi0) + 2 * dphi1xdx * (phi0)) + dxidx * phi1x * (phi0)
-        # Txx = self.unit_cell_integ(integxx)
-        # integyy = xi * (phi0 * (phi0) + 2 * dphi1ydy * (phi0)) + dxidy * phi1y * (phi0)
-        # Tyy = self.unit_cell_integ(integyy)
-        # integxy = 2 * xi * dphi1ydx * (phi0) + dxidx * phi1y * (phi0)
-        # Txy = self.unit_cell_integ(integxy)
-        # integyx = 2 * xi * dphi1xdy * (phi0) + dxidy * phi1x * (phi0)
-        # Tyx = self.unit_cell_integ(integyx)
-
-        # T = bk.array([[Txx, Txy], [Tyx, Tyy]])
         T = bk.zeros((2, 2), dtype=bk.complex128)
         T[0, 0] = Txx
         T[1, 1] = Tyy
@@ -375,10 +388,10 @@ class Simulation:
         coeffs0 = self.eigenvectors[:, imode]
         mode0 = self.coeff2mode(coeffs0)
         mode0 = mode0 * ph
-        norma = self.normalization(mode0, polarization) ** 0.5
+        norma = self.normalization(mode0, polarization)
         mode0 = mode0 / norma
         coeffs0 = coeffs0 / norma
-        # assert np.allclose(normalization(self, mode0, polarization), 1)
+
         Cs = self.build_Cs(coeffs0, polarization)
         M = -self.A + k0**2 * self.B * bk.array(bk.eye(self.nh))
         coeffs1 = bk.linalg.solve(M, Cs)
