@@ -1,11 +1,7 @@
-
-
-
 variables:
   TERM: "xterm"
   DISPLAY: ":99.0"
   PYVISTA_OFF_SCREEN: "true"
-
 
 stages:
   - badge
@@ -13,9 +9,9 @@ stages:
   - trigdoc
   - trigdocker
   - test
+  - deploy
 
-.before-python: &before-python
-  ## install os tools
+.before-python: &before-python ## install os tools
   - apt-get update -q && apt-get install -q -y --no-install-recommends make libgl1-mesa-dev xvfb
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
@@ -24,7 +20,7 @@ stages:
   - mamba env update -n base -f environment.yml
   # - conda env create -f environment.yml
   # - source activate protis
-  - python -V  # Print out python version for debugging
+  - python -V # Print out python version for debugging
   # pyvista config for x server
   # see https://github.com/pyvista/gl-ci-helpers/blob/master/travis/setup_headless_display.sh
   # - export DISPLAY=:99.0
@@ -32,8 +28,6 @@ stages:
   - which Xvfb
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   - sleep 3
-
-
 
 badge:
   stage: badge
@@ -49,8 +43,8 @@ badge:
     - echo {\"schemaVersion\":"1", \"logoSvg\":\"$logo\", \"label\":\"release\", \"message\":\"$latest_release_tag\", \"color\":\"8c4ab0\", \"labelColor\":\"dedede\", \"style\":\"for-the-badge\"} > logobadge.json
   artifacts:
     paths:
-        - badges.json
-        - logobadge.json
+      - badges.json
+      - logobadge.json
 
 staging:
   stage: trigdoc
@@ -58,13 +52,11 @@ staging:
   only:
     - main
 
-
 container:
   stage: trigdocker
   trigger: nannos/docker
   only:
     - tags
-
 
 test:
   stage: test
@@ -85,8 +77,6 @@ test:
   only:
     - main
 
-
-
 send-snapshot:
   stage: zenodo
   image: python
@@ -95,5 +85,16 @@ send-snapshot:
     - pip install gitlab2zenodo
     - git archive --format zip --output ${CI_COMMIT_TAG#v}.zip ${CI_COMMIT_TAG}
     - g2z-send -p -m .zenodo.json ${CI_COMMIT_TAG#v}.zip
+  only:
+    - tags
+
+pypi:
+  image: python:latest
+  stage: deploy
+  cache: {}
+  script:
+    - pip install twine build
+    - python3 -m build --sdist --wheel .
+    - twine upload dist/*
   only:
     - tags
