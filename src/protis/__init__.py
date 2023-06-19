@@ -12,7 +12,6 @@ from .__about__ import data as _data
 
 
 def _reload_package():
-
     import importlib
     import sys
 

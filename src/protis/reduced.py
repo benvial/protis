@@ -41,7 +41,6 @@ def gram_schmidt(A, norm=True, row_vect=False):
 
     # iterate from 2nd vector to number of vectors
     for i in range(1, no_of_vectors):
-
         # calculates weights(coefficents) for every vector in G
         GH = bk.conj(G)
         numerator = A[:, i].T @ GH
@@ -69,7 +68,6 @@ def gram_schmidt(A, norm=True, row_vect=False):
 
 
 def replace_zero(array):
-
     for i in range(len(array)):
         if array[i] == 0:
             array[i] = 1

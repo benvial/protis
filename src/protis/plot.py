@@ -21,7 +21,6 @@ def plot2d(
     cellstyle="-k",
     **kwargs,
 ):
-
     return plot_layer(
         lattice,
         grid,

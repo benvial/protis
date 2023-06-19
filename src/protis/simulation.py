@@ -257,7 +257,6 @@ class Simulation:
                     Csx = u[1, 0] * Ky - u[1, 1] * Kx
                     Cs = Csx @ phi0, Csy @ phi0
                 else:
-
                     u = bk.linalg.inv(q)
                     uxx = get_block(u, 0, 0, self.nh)
                     uxy = get_block(u, 0, 1, self.nh)
@@ -345,7 +344,6 @@ class Simulation:
         )
 
     def _get_hom_tensor(self, phi0, phis1, polarization):
-
         # Kx = bk.array(self.Kx) + 0j
         # Ky = bk.array(self.Ky) + 0j
         phi1x, phi1y = phis1
@@ -382,7 +380,6 @@ class Simulation:
         return T
 
     def get_hfh_tensor(self, imode, polarization):
-
         ph = self.phasor()
         k0 = self.eigenvalues[imode]
         coeffs0 = self.eigenvectors[:, imode]

@@ -153,7 +153,6 @@ cmap = "Reds" if polarization == "TE" else "Blues"
 
 
 def rbme_model(bands, epsilon, polarization, nh=nh, Nmodel=2, N_RBME=8):
-
     sim = pt.Simulation(lattice, epsilon=epsilon, mu=1, nh=nh)
     q = pt.pi / a
     if Nmodel == 2:
@@ -199,7 +198,6 @@ def simu(x, proj_level=None, rfilt=0, return_bg=False):
         omega_c = bk.mean(test)
         objective = bk.sum((test - dispersion - omega_c) ** 2)
     else:
-
         # objective1 = -width/center_target * alpha
         # objective2 = (center - center_target)**2/center_target**2
         # objective = objective1 * alpha + objective2* (1 - alpha)

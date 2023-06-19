@@ -50,6 +50,7 @@ extensions = [
     "sphinx_gallery.gen_gallery",
     "sphinx_copybutton",
     "jupyter_sphinx",
+    "sphinxcontrib.jquery",
     "sphinx_thebe",
 ]
 
@@ -60,6 +61,7 @@ thebe_config = {
     "repository_branch": "doc",
 }
 
+
 # a simple label style which uses the bibtex keys for labels
 class MatchLabelStyle(BaseLabelStyle):
     def format_labels(self, sorted_entries):
@@ -68,7 +70,6 @@ class MatchLabelStyle(BaseLabelStyle):
 
 
 class protisStyle(UnsrtStyle):
-
     default_label_style = MatchLabelStyle
 
 
@@ -140,7 +141,7 @@ release = package.__version__  # + '-git'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -166,6 +167,13 @@ highlight_language = "python3"
 html_theme = "pydata_sphinx_theme"
 
 html_static_path = ["_custom/static"]
+
+# html_css_files = [
+#     "css/custom_styles.css",
+#     "css/custom_gallery.css",
+#     "css/custom_pygments.css",
+# ]
+# html_js_files = ["js/custom.js"]
 
 
 def env_get_outdated(app, env, added, changed, removed):
@@ -374,9 +382,9 @@ intersphinx_mapping = {
 
 sphinx_gallery_conf = {
     # path to your examples scripts
-    "examples_dirs": ["../examples", "../tutorials"],
+    "examples_dirs": ["../examples"],  # , "../tutorials"],
     # path where to save gallery generated examples
-    "gallery_dirs": ["examples", "tutorials"],
+    "gallery_dirs": ["examples"],  # , "tutorials"],
     # directory where function granular galleries are stored
     "backreferences_dir": "generated/backreferences",
     "remove_config_comments": True,

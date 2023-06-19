@@ -18,13 +18,12 @@ dependencies:
   - pytorch-gpu
   - jax
   - jaxlib
-  - magma
-  - pyvista
-  - pythreejs
-  - ipyvtklink
-  - panel
   - autograd
+  - magma
+  - trame
+  - nest-asyncio
+  - ipywidgets
   - scikit-image
+  - nannos>=2.5.3
   - pip:
-    - nannos>=2.5.0
     - git+https://gitlab.com/protis/protis.git

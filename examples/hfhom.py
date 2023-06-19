@@ -136,7 +136,6 @@ bands_hom = bk.vstack((bands, bands[0]))
 
 
 def plot_bd(BD):
-
     plt.figure(figsize=(3.2, 2.5))
 
     plot = plt.plot(bands_plot, BD, c="#4199b0")
@@ -176,7 +175,6 @@ def init_point(point):
 
 
 def compute_hfhom(sim, special_points, modes_indexes, polarization, plot=True):
-
     hom = dict()
     for point in special_points:
         print("**************")
@@ -253,7 +251,6 @@ def simu(x, proj_level=None, rfilt=0, sym=True):
     T = sim.get_hfh_tensor(mode_index, polarization)
 
     if hyperbolic_target:
-
         objective = bk.abs(1 + T[1, 1].real / T[0, 0].real) ** 2
     else:
         objective = bk.abs(T[0, 0].real - Txx_target) ** 2
@@ -290,7 +287,6 @@ def callback(x, y, proj_level, rfilt):
     global it
 
     if plots:
-
         dens = bk.reshape(x, lattice.discretization)
         dens = symmetrize_pattern(dens)
         density_f = no.apply_filter(dens, rfilt)
