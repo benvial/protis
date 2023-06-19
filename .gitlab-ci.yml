@@ -82,7 +82,7 @@ test-pip:
   extends: .tester
   image: condaforge/mambaforge:latest
   script:
-    - apt-get update -q && apt-get install -q -y --no-install-recommends libgl1-mesa-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
+    - apt-get update -q && apt-get install -q -y --no-install-recommends libgl1-mesa-dev libxrender1 && apt-get clean && rm -rf /var/lib/apt/lists/*
     - make install
     - make test-req
     - make test
