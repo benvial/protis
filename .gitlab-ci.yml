@@ -81,7 +81,7 @@ container:
 test-pip:
   extends: .tester
   script:
-    - mamba env create -n test-pip python=3.11
+    - mamba env create -n test-pip python=3.10
     - source activate test-pip
     - make install
     - make test-req
