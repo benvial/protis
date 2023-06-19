@@ -72,7 +72,7 @@ container:
 .tester:
   stage: test
   image: benvial/protis:latest
-  before-script: 
+  before_script: 
     - !reference [.before-python, script]
   only:
     - main
