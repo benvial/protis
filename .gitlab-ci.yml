@@ -30,7 +30,7 @@ stages:
     - apt-get update -q && apt-get install -q -y --no-install-recommends make libgl1-mesa-dev xvfb
 
 .before-python:
-  - extends: 
+  extends: 
     - .install-os-tools
     - .setup-conda
     - .setup-Xvfb
