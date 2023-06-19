@@ -66,25 +66,32 @@ container:
   only:
     - tags
 
-test-pip:
+
+
+
+.tester:
   stage: test
   image: benvial/protis:latest
-  script:
+  before-script: 
     - !reference [.before-python, script]
-    - mamba env create -n test-pip python==3.11
-    - source activate test-pip
-    - make install
-    - make test-req
-    - make test
   only:
     - main
 
 
-test-conda:
-  stage: test
-  image: benvial/protis:latest
+test-pip:
+  extends: .tester
   script:
-    - !reference [.before-python, script]
+    - mamba env create -n test-pip python=3.11
+    - source activate test-pip
+    - make install
+    - make test-req
+    - make test
+
+
+
+test-conda:
+  extends: .tester
+  script:
     - mamba env update -n base -f environment.yml
     - make install
     - make test-req
@@ -96,8 +103,7 @@ test-conda:
       coverage_report:
         coverage_format: cobertura
         path: coverage.xml
-  only:
-    - main
+
 
 
 
