@@ -82,8 +82,7 @@ test-pip:
   extends: .tester
   image: condaforge/mambaforge:latest
   script:
-    - mamba create -n test-pip python=3.10
-    - source activate test-pip
+    - apt-get update -q && apt-get install -q -y --no-install-recommends libgl1-mesa-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
     - make install
     - make test-req
     - make test
