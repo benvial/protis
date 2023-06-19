@@ -7,5 +7,3 @@ dependencies:
   - pip
   - nannos>=2.5.3
   - scikit-image
-  - pip:
-    - git+https://gitlab.com/protis/protis.git

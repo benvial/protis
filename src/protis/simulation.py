@@ -244,9 +244,9 @@ class Simulation:
 
         q = self.mu_hat if polarization == "TM" else self.epsilon_hat
 
-        self.mu_hat = self._get_toeplitz_matrix(self.mu)
         a = 1 / self.mu if polarization == "TM" else 1 / self.epsilon
         ahat = self._get_toeplitz_matrix(a)
+
         if is_scalar(q):
             Cs = 1 / q * Kx @ phi0, 1 / q * Ky @ phi0
         else:
@@ -276,7 +276,7 @@ class Simulation:
                 kxu = matmuldiag(Kx, u.T).T
                 kyu = matmuldiag(Ky, u.T).T
                 ukx = matmuldiag(Kx, u)
-                kyu = matmuldiag(Ky, u)
+                uky = matmuldiag(Ky, u)
                 # # kxu = matmuldiag(u,Kx)
                 # # kyu = matmuldiag(u,Ky)
 
