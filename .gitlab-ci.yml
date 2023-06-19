@@ -12,19 +12,22 @@ stages:
   - deploy
 
 .setup-conda:
-  - conda config --set always_yes yes --set changeps1 no
-  - conda config --add channels conda-forge
-  - sed -i 's/name protis/name base/g' environment.yml
-  - conda install mamba
+  script:
+    - conda config --set always_yes yes --set changeps1 no
+    - conda config --add channels conda-forge
+    - sed -i 's/name protis/name base/g' environment.yml
+    - conda install mamba
 
 
 .setup-Xvfb:
-  - which Xvfb
-  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  - sleep 3
+  script:
+    - which Xvfb
+    - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+    - sleep 3
 
 .install-os-tools:
-  - apt-get update -q && apt-get install -q -y --no-install-recommends make libgl1-mesa-dev xvfb
+  script:
+    - apt-get update -q && apt-get install -q -y --no-install-recommends make libgl1-mesa-dev xvfb
 
 .before-python:
   - extends: 
