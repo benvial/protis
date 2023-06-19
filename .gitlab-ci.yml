@@ -29,11 +29,12 @@ stages:
   script:
     - apt-get update -q && apt-get install -q -y --no-install-recommends make libgl1-mesa-dev xvfb
 
+
 .before-python:
-  extends: 
-    - .install-os-tools
-    - .setup-conda
-    - .setup-Xvfb
+  script:
+    - !reference [.install-os-tools, script]
+    - !reference [.setup-conda, script]
+    - !reference [.setup-Xvfb, script]
 
 
 badge:
@@ -68,8 +69,8 @@ container:
 test-pip:
   stage: test
   image: benvial/protis:latest
-  extends: .before-python
   script:
+    - !reference [.before-python, script]
     - mamba env create -n test-pip python==3.11
     - source activate test-pip
     - make install
@@ -82,8 +83,8 @@ test-pip:
 test-conda:
   stage: test
   image: benvial/protis:latest
-  extends: .before-python
   script:
+    - !reference [.before-python, script]
     - mamba env update -n base -f environment.yml
     - make install
     - make test-req
