@@ -1,29 +1,29 @@
 @import "variables.less";
 
 div.sphx-glr-download a {
-  background-color: @gray-base!important;
-  color: white!important;
-  background-image: none!important;
-  border-radius: 8px!important;
-  border: 1px solid @gray-base!important;
-  display: inline-block!important;
-  font-weight: bold!important;
+  background-color: @gray-base !important;
+  color: white !important;
+  background-image: none !important;
+  border-radius: 8px !important;
+  border: 1px solid @gray-base !important;
+  display: inline-block !important;
+  font-weight: bold !important;
   padding: 0.8em 0.8em 0.8em 0.8em !important;
-  text-align: center!important;
-  font-size: @font-size-small!important;
-  max-width: 400px!important;
+  text-align: center !important;
+  font-size: @font-size-small !important;
+  max-width: 400px !important;
   transition: ease-in-out 0.3s;
   margin: 2px 6px 2px 6px;
 }
 
 div.sphx-glr-download a:hover {
-  box-shadow: none!important;
-  text-decoration: none!important;
-  background-image: none!important;
-  background-color: @gray-base-light!important;
-  border: 1px solid @gray-base-light!important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  background-image: none !important;
+  background-color: @gray-base-light !important;
+  border: 1px solid @gray-base-light !important;
   color: white !important;
-  max-width: 400px!important;
+  max-width: 400px !important;
   scale: 1.03;
 }
 
@@ -47,8 +47,8 @@ div.sphx-glr-download code.download hover {
   overflow-wrap: break-word;
   border: none;
   background: none;
-  background-color: @gray-base-light!important;
-  border: 1px solid @gray-base-light!important;
+  background-color: @gray-base-light !important;
+  border: 1px solid @gray-base-light !important;
   max-width: 400px;
   font-family: @font-family-sans-serif;
   font-size: @font-size-base;
@@ -67,6 +67,7 @@ div.sphx-glr-download code.download hover {
   padding-top: 5px;
   position: relative;
 }
+
 /*.sphx-glr-thumbcontainer {
     border-radius: 0px;
 }*/
@@ -81,8 +82,8 @@ div.sphx-glr-download code.download hover {
   box-shadow: 0 0 15px rgba(113, 113, 113, 0.5) !important;
 }
 
-.rst-content .section > a > img,
-.rst-content .section > img {
+.rst-content .section>a>img,
+.rst-content .section>img {
   margin-bottom: 24px;
   background: @body-bg;
   border: solid @body-bg-dark 1px;
@@ -105,13 +106,15 @@ div.sphx-glr-download code.download hover {
 .sphx-glr-timing {
   font-size: 80%;
   color: @gray-base-lighter;
-  padding-top: 20px;
+  padding-top: 4rem;
+  font-family: @font-family-monospace;
 }
 
-.sphx-glr-timing + p {
+.sphx-glr-timing+p {
   font-size: 80%;
   color: @gray-base-lighter;
-  padding-bottom: 20px;
+  padding-bottom: 4rem;
+  font-family: @font-family-monospace;
 }
 
 dt.label {
@@ -119,21 +122,21 @@ dt.label {
   border-top: none !important;
 }
 
-dl.citation > dt,
-dl.footnote > dt {
+dl.citation>dt,
+dl.footnote>dt {
   float: none;
   margin-right: 0.5em;
 }
 
 .sphx-glr-script-out .highlight pre {
-  background-color: @gray-base!important;
-  max-height: 30em!important;
-  overflow: auto!important;
-  padding-left: 1ex!important;
+  background-color: @gray-base !important;
+  max-height: 30em !important;
+  overflow: auto !important;
+  padding-left: 1ex !important;
   margin: 0;
-  word-break: break-word!important;
-  border-radius: 12px!important;
-  color: @body-bg!important;
+  word-break: break-word !important;
+  border-radius: 12px !important;
+  color: @body-bg !important;
 }
 
 .sphx-glr-script-out::before {
@@ -158,11 +161,11 @@ div.sphx-glr-footer {
   padding: 2px;
 }
 
-.citation > dd > p > a {
+.citation>dd>p>a {
   visibility: hidden;
 }
 
-.citation > dd > p > a.reference.external::before {
+.citation>dd>p>a.reference.external::before {
   color: @brand-primary;
   font-family: "Font Awesome 5 Free";
   content: "\f35d";
@@ -172,16 +175,16 @@ div.sphx-glr-footer {
   font-size: @font-size-base;
 }
 
-.citation > dd > p > a {
+.citation>dd>p>a {
   visibility: hidden;
   font-size: 0;
 }
 
-.citation > dd > p > a.reference.external:hover::before {
+.citation>dd>p>a.reference.external:hover::before {
   color: lighten(@brand-primary, 13.5%);
 }
 
-.citation > dd > p > a.reference.external:focus::before {
+.citation>dd>p>a.reference.external:focus::before {
   color: lighten(@brand-primary, 13.5%);
 }
 
@@ -190,6 +193,7 @@ div.sphx-glr-download {
   vertical-align: middle;
   // display: -webkit-inline-box;
 }
+
 // div.sphx-glr-download-link-note {
 //   height: 0px;
 //   visibility: hidden;
@@ -201,19 +205,19 @@ div.sphx-glr-download-link-note.admonition.note {
   margin: -7px;
 }
 
-.toc-entry > .nav-link.active {
+.toc-entry>.nav-link.active {
   font-weight: 600;
   color: @brand-secondary;
   background-color: transparent;
   border-left: 2px solid @brand-secondary;
 }
 
-.bd-sidebar .nav > li > a:hover {
+.bd-sidebar .nav>li>a:hover {
   color: @brand-secondary;
 }
 
-.sphx-glr-example-title > :target::before {
-  height: 0px!important;
+.sphx-glr-example-title> :target::before {
+  height: 0px !important;
 }
 
 .sphx-glr-thumbcontainer a.internal {
@@ -228,7 +232,7 @@ div.sphx-glr-download-link-note.admonition.note {
 
 
 .sphx-glr-thumbcontainer[tooltip]:hover::before {
-  border-color: @gray-base transparent  !important;
+  border-color: @gray-base transparent !important;
   opacity: 0.8;
   bottom: 82% !important;
   left: 76.5% !important;
@@ -284,30 +288,31 @@ div.sphx-glr-download-link-note.admonition.note {
   // display: block !important;
 }
 
-.caption-text > .reference.internal {
-    color: #868585 !important;
-    padding-top: 32px !important;
-    font-style: oblique;
-    font-size: 90%;
-    font-weight: 700;
-    text-transform: uppercase;
+.caption-text>.reference.internal {
+  color: #868585 !important;
+  padding-top: 32px !important;
+  font-style: oblique;
+  font-size: 90%;
+  font-weight: 700;
+  text-transform: uppercase;
 
 }
+
 .sphx-glr-thumbcontainer[tooltip]:hover::after {
   background: @gray-base !important;
-    opacity: 0.8;
-    border-radius: 0px !important;
-    padding-top: 9% !important;
-    position: absolute !important;
-    width: 100% !important;
-    height: 100% !important;
-    bottom: 0% !important;
-    left: 0% !important;
-    text-align: center !important;
-    font-style: oblique;
-    font-size: inherit;
-    color: white !important;
-  }
+  opacity: 0.8;
+  border-radius: 0px !important;
+  padding-top: 9% !important;
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  bottom: 0% !important;
+  left: 0% !important;
+  text-align: center !important;
+  font-style: oblique;
+  font-size: inherit;
+  color: white !important;
+}
 
 .sphx-glr-thumbcontainer img {
   padding-top: 32px;
@@ -317,12 +322,20 @@ div.sphx-glr-download-link-note.admonition.note {
 div.sphx-glr-download:hover code.download {
   color: white !important;
 }
+
 div.sphx-glr-download:hover i {
   background: white !important;
 }
+
 code.download {
   transition: ease-in-out 0.3s;
 }
+
 i {
   transition: ease-in-out 0.3s;
+}
+
+
+.sphx-glr-thumbnails {
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)) !important;
 }

@@ -27,7 +27,7 @@ stages:
 
 .install-os-tools:
   script:
-    - apt-get update -q && apt-get install -q -y --no-install-recommends make libgl1-mesa-dev xvfb
+    - apt-get update -q && apt-get install -q -y --no-install-recommends make libgl1-mesa-dev xvfb libxrender1
 
 
 .before-python:
@@ -35,6 +35,7 @@ stages:
     - !reference [.install-os-tools, script]
     - !reference [.setup-conda, script]
     - !reference [.setup-Xvfb, script]
+    - make test-req
 
 
 badge:
@@ -67,8 +68,6 @@ container:
     - tags
 
 
-
-
 .tester:
   stage: test
   image: benvial/protis:latest
@@ -82,9 +81,7 @@ test-pip:
   extends: .tester
   image: condaforge/mambaforge:latest
   script:
-    - apt-get update -q && apt-get install -q -y --no-install-recommends libgl1-mesa-dev libxrender1 && apt-get clean && rm -rf /var/lib/apt/lists/*
     - make install
-    - make test-req
     - make test
 
 
@@ -94,7 +91,6 @@ test-conda:
   script:
     - mamba env update -n base -f environment.yml
     - make install
-    - make test-req
     - make test
     - coverage xml
   coverage: '/TOTAL.*\s([.\d]+)%/'
