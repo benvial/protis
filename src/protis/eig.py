@@ -33,31 +33,28 @@ def _gen_eig_scipy(A, B, vectors=True):
                 out = scipy.linalg.eigvalsh(A / B)
             except scipy.linalg.LinAlgError:
                 out = scipy.linalg.eigvals(A / B)
+    elif vectors:
+        try:
+            out = scipy.linalg.eigh(A, B)
+        except scipy.linalg.LinAlgError:
+            out = scipy.linalg.eig(A, B)
     else:
-        if vectors:
-            try:
-                out = scipy.linalg.eigh(A, B)
-            except scipy.linalg.LinAlgError:
-                out = scipy.linalg.eig(A, B)
-        else:
-            try:
-                out = scipy.linalg.eigvalsh(A, B)
-            except scipy.linalg.LinAlgError:
-                out = scipy.linalg.eigvals(A, B)
+        try:
+            out = scipy.linalg.eigvalsh(A, B)
+        except scipy.linalg.LinAlgError:
+            out = scipy.linalg.eigvals(A, B)
 
     return out
 
 
 def _gen_eig_scipy_sparse(A, B, vectors=True, neig=10, **kwargs):
-    if is_scalar(B):
-        out = scipy.sparse.linalg.eigsh(
-            A / B, k=neig, return_eigenvectors=vectors, **kwargs
-        )
-    else:
-        out = scipy.sparse.linalg.eigsh(
+    return (
+        scipy.sparse.linalg.eigsh(A / B, k=neig, return_eigenvectors=vectors, **kwargs)
+        if is_scalar(B)
+        else scipy.sparse.linalg.eigsh(
             A, k=neig, M=B, return_eigenvectors=vectors, **kwargs
         )
-    return out
+    )
 
 
 def _gen_eig_torch_sparse(A, B, vectors=True, neig=10, **kwargs):
@@ -87,11 +84,5 @@ def gen_eig(A, B, vectors=True, sparse=False, neig=10, **kwargs):
     #     # this works only for real matrices
     #     return _gen_eig_torch_sparse(A, B, vectors=vectors, neig=neig, **kwargs)
 
-    if is_scalar(B):
-        C = A / B
-        return eig(C, vectors=vectors, hermitian=is_hermitian(C))
-    else:
-        # invB = bk.linalg.inv(B)
-        # C = invB @ A
-        C = bk.linalg.solve(B, A)
-        return eig(C, vectors=vectors, hermitian=is_hermitian(C))
+    C = A / B if is_scalar(B) else bk.linalg.solve(B, A)
+    return eig(C, vectors=vectors, hermitian=is_hermitian(C))

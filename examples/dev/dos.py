@@ -76,10 +76,10 @@ def rbme_model(bands, nh=100, Nmodel=2, N_RBME=8):
         bands_RBME = [(0, 0), (q / 2, 0), (q, 0), (q, q / 2), (q, q), (q / 2, q / 2)]
     else:
         raise ValueError
-    rbme = {}
-    for polarization in ["TE", "TM"]:
-        rbme[polarization] = sim.get_rbme_matrix(N_RBME, bands_RBME, polarization)
-
+    rbme = {
+        polarization: sim.get_rbme_matrix(N_RBME, bands_RBME, polarization)
+        for polarization in ["TE", "TM"]
+    }
     BD_RBME = {}
     for polarization in ["TE", "TM"]:
         ev_band = []
@@ -117,14 +117,14 @@ BD, t_full, sim_full = full_model(bands, nh=100)
 
 # neig_max = sim_full.nh
 
-full_bd = dict()
+full_bd = {}
+nmax = 6
 for polarization in ["TE", "TM"]:
     # neig_rbme = BD[polarization].shape[-1]
     full_bd[polarization] = BD[polarization].reshape(Nbz, Nbz, sim_full.nh)
     fig = plt.figure()
     ax = plt.axes(projection="3d")
 
-    nmax = 6
     for i in range(nmax):
         ax.plot_surface(
             bandsx1,

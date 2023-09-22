@@ -24,7 +24,7 @@ tmpdir = tempfile.mkdtemp(dir=".")
 
 
 def savefig(base, it):
-    name = tmpdir + "/" + base + str(it).zfill(4) + ".png"
+    name = f"{tmpdir}/{base}{str(it).zfill(4)}.png"
     plt.savefig(name)
 
 
@@ -161,9 +161,7 @@ def rbme_model(bands, epsilon, polarization, nh=nh, Nmodel=2, N_RBME=8):
         bands_RBME = [(0, 0), (q / 2, 0), (q, 0), (q, q / 2), (q, q), (q / 2, q / 2)]
     else:
         raise ValueError
-    rbme = {}
-    rbme[polarization] = sim.get_rbme_matrix(N_RBME, bands_RBME, polarization)
-
+    rbme = {polarization: sim.get_rbme_matrix(N_RBME, bands_RBME, polarization)}
     ev_band = []
     for kx, ky in bands:
         sim.k = kx, ky
@@ -223,10 +221,7 @@ def simu(x, proj_level=None, rfilt=0, return_bg=False):
 
     pltpause(0.1)
 
-    if return_bg:
-        return objective, BD_RBME
-    else:
-        return objective
+    return (objective, BD_RBME) if return_bg else objective
 
 
 ##############################################################################

@@ -146,15 +146,12 @@ x = np.linspace(0, a, nx)
 y = np.linspace(0, a, ny)
 fi = si.RectBivariateSpline(x, y, density_bin)
 
-i = 0
-for x, y in V.tabulate_dof_coordinates():
+for i, (x, y) in enumerate(V.tabulate_dof_coordinates()):
     x = np.mod(x, a)
     y = np.mod(y, a)
     val = fi(x, y)
     val = 0 if val < 0.5 else 1
     dens_array[i] = val
-    i += 1
-
 dens = gy.utils.array2function(dens_array, V)
 epsilon["des"] = (9 - 1) * dens + 1
 

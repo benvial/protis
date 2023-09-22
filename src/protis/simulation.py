@@ -141,13 +141,10 @@ class Simulation:
                     else self.epsilon_hat
                 )
 
+        elif is_scalar(self.mu_hat):
+            self.B = self.mu_hat
         else:
-            if is_scalar(self.mu_hat):
-                self.B = self.mu_hat
-            else:
-                self.B = (
-                    self.mu_hat[2, 2] if is_anisotropic(self.mu_hat) else self.mu_hat
-                )
+            self.B = self.mu_hat[2, 2] if is_anisotropic(self.mu_hat) else self.mu_hat
 
         return self.B
 
@@ -193,10 +190,7 @@ class Simulation:
             # retrieve full vectors
             v = rbme @ v @ bk.conj(rbme.T)
         self.eigenvectors = v[:, i] if vectors else None
-        if vectors:
-            return self.eigenvalues, self.eigenvectors
-        else:
-            return self.eigenvalues
+        return (self.eigenvalues, self.eigenvectors) if vectors else self.eigenvalues
 
     def get_rbme_matrix(self, N_RBME, bands_RBME, polarization):
         v = []
@@ -229,10 +223,7 @@ class Simulation:
         if is_scalar(q):
             return 1 / q
         else:
-            if is_anisotropic(q):
-                return bk.linalg.inv(q[:2, :2])
-            else:
-                return 1 / q
+            return bk.linalg.inv(q[:2, :2]) if is_anisotropic(q) else 1 / q
 
     def build_Cs(self, phi0, polarization):
         def matmuldiag(A, B):

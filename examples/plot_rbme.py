@@ -87,10 +87,10 @@ def rbme_model(bands, nh=100, Nmodel=2, N_RBME=8):
         bands_RBME = [(0, 0), (q / 2, 0), (q, 0), (q, q / 2), (q, q), (q / 2, q / 2)]
     else:
         raise ValueError
-    rbme = {}
-    for polarization in ["TE", "TM"]:
-        rbme[polarization] = sim.get_rbme_matrix(N_RBME, bands_RBME, polarization)
-
+    rbme = {
+        polarization: sim.get_rbme_matrix(N_RBME, bands_RBME, polarization)
+        for polarization in ["TE", "TM"]
+    }
     BD_RBME = {}
     for polarization in ["TE", "TM"]:
         ev_band = []
@@ -195,7 +195,7 @@ plt.tight_layout()
 ##############################################################################
 # Performances with number of k-space points
 
-result = dict()
+result = {}
 NH = [100, 200]
 num_ks = np.arange(5, 100, 15)
 for nh in NH:

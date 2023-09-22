@@ -13,10 +13,7 @@ from .. import backend as bk
 
 
 def is_scalar(a):
-    if hasattr(a, "shape"):
-        return len(a.shape) == 0
-    else:
-        return _is_scalar(a)
+    return len(a.shape) == 0 if hasattr(a, "shape") else _is_scalar(a)
 
 
 def block_anisotropic(a, dim=3):
@@ -50,14 +47,13 @@ def block(a):
 def is_z_anisotropic(a):
     if not is_anisotropic(a):
         return False
-    else:
-        zer = 0 * a[0, 0]
-        return (
-            bk.allclose(a[0, 2], zer)
-            and bk.allclose(a[1, 2], zer)
-            and bk.allclose(a[2, 0], zer)
-            and bk.allclose(a[2, 1], zer)
-        )
+    zer = 0 * a[0, 0]
+    return (
+        bk.allclose(a[0, 2], zer)
+        and bk.allclose(a[1, 2], zer)
+        and bk.allclose(a[2, 0], zer)
+        and bk.allclose(a[2, 1], zer)
+    )
 
 
 def is_symmetric(M):

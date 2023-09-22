@@ -131,41 +131,38 @@ def marching_square(xVector, yVector, Data, threshold, interp=True):
     Height = len(Data)  # rows
     Width = len(Data[1])  # cols
 
-    if (Width == len(xVector)) and (Height == len(yVector)):
-        squares = bk.full((Height - 1, Width - 1), Square())
-
-        sqHeight = squares.shape[0]  # rows count
-        sqWidth = squares.shape[1]  # cols count
-
-        for j in range(sqHeight):  # rows
-            for i in range(sqWidth):  # cols
-                a = Data[j + 1, i]
-                b = Data[j + 1, i + 1]
-                c = Data[j, i + 1]
-                d = Data[j, i]
-                A = [xVector[i], yVector[j + 1]]
-                B = [xVector[i + 1], yVector[j + 1]]
-                C = [xVector[i + 1], yVector[j]]
-                D = [xVector[i], yVector[j]]
-
-                squares[j, i].A_data = a
-                squares[j, i].B_data = b
-                squares[j, i].C_data = c
-                squares[j, i].D_data = d
-
-                squares[j, i].A = A
-                squares[j, i].B = B
-                squares[j, i].C = C
-                squares[j, i].D = D
-
-                list = squares[j, i].GetLines(
-                    threshold, interp=interp, target=threshold
-                )
-
-                linesList = linesList + list
-    else:
+    if Width != len(xVector) or Height != len(yVector):
         raise AssertionError
 
+    squares = bk.full((Height - 1, Width - 1), Square())
+
+    sqHeight = squares.shape[0]  # rows count
+    sqWidth = squares.shape[1]  # cols count
+
+    for j in range(sqHeight):  # rows
+        for i in range(sqWidth):  # cols
+            a = Data[j + 1, i]
+            b = Data[j + 1, i + 1]
+            c = Data[j, i + 1]
+            d = Data[j, i]
+            A = [xVector[i], yVector[j + 1]]
+            B = [xVector[i + 1], yVector[j + 1]]
+            C = [xVector[i + 1], yVector[j]]
+            D = [xVector[i], yVector[j]]
+
+            squares[j, i].A_data = a
+            squares[j, i].B_data = b
+            squares[j, i].C_data = c
+            squares[j, i].D_data = d
+
+            squares[j, i].A = A
+            squares[j, i].B = B
+            squares[j, i].C = C
+            squares[j, i].D = D
+
+            list = squares[j, i].GetLines(threshold, interp=interp, target=threshold)
+
+            linesList = linesList + list
     return [linesList]
 
 

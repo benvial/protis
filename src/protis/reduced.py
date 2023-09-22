@@ -61,10 +61,7 @@ def gram_schmidt(A, norm=True, row_vect=False):
         # replace zero to 1 to deal with division by 0 if matrix has 0 vector
         G = G / replace_zero(bk.linalg.norm(G, axis=0))
 
-    if row_vect:
-        return G.T
-
-    return bk.array(G)
+    return G.T if row_vect else bk.array(G)
 
 
 def replace_zero(array):

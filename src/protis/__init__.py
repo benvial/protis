@@ -54,10 +54,13 @@ def use_gpu(boolean):
 
 _backend_env_var = os.environ.get("PROTIS_BACKEND")
 
-if _backend_env_var in available_backends and _backend_env_var is not None:
-    if BACKEND != _backend_env_var and not "_FORCE_BACKEND" in globals():
-        logger.debug(f"Found environment variable PROTIS_BACKEND={_backend_env_var}")
-        set_backend(_backend_env_var)
+if (
+    _backend_env_var in available_backends
+    and _backend_env_var is not None
+    and (BACKEND != _backend_env_var and "_FORCE_BACKEND" not in globals())
+):
+    logger.debug(f"Found environment variable PROTIS_BACKEND={_backend_env_var}")
+    set_backend(_backend_env_var)
 
 
 def print_info():

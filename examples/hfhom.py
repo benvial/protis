@@ -77,7 +77,7 @@ bands[2 * Nb - 1 : 3 * Nb - 3, 0] = bands[2 * Nb - 1 : 3 * Nb - 3, 1] = bk.flipu
     1:-1
 ]
 
-Nhom = int(Nb / 2)
+Nhom = Nb // 2
 
 n_eig_hom = 6
 
@@ -175,7 +175,7 @@ def init_point(point):
 
 
 def compute_hfhom(sim, special_points, modes_indexes, polarization, plot=True):
-    hom = dict()
+    hom = {}
     for point in special_points:
         print("**************")
         print(f"{point} point")
@@ -204,7 +204,7 @@ def compute_hfhom(sim, special_points, modes_indexes, polarization, plot=True):
             for b, bp in zip(bands_hom_1, bands_plot_1):
                 kappa = [b[:, i] - propagation_vector[i] for i in range(2)]
                 q = sum(
-                    [T[i, j] * kappa[i] * kappa[j] for i in range(2) for j in range(2)]
+                    T[i, j] * kappa[i] * kappa[j] for i in range(2) for j in range(2)
                 )
                 omega_hom = (k0**2 + q) ** 0.5 / norm_eigval
                 # omega_hom = (k0 + (T[0,0] * bands[:,0]**2 + T[1,1] * bands[:,1]**2)/(2*k0)) / norm_eigval
@@ -308,15 +308,15 @@ def callback(x, y, proj_level, rfilt):
         xmatrix, ymatrix = 0.5, 1.06
         dxmatrix = 0.11
         dymatrix = 0.06
-        ax.annotate(f"T = ", (xmatrix, ymatrix), xycoords="axes fraction")
+        ax.annotate("T = ", (xmatrix, ymatrix), xycoords="axes fraction")
         ax.annotate(
-            f"[",
+            "[",
             (xmatrix + dxmatrix / 1.7, ymatrix - dymatrix / 3),
             fontsize=18,
             xycoords="axes fraction",
         )
         ax.annotate(
-            f"]",
+            "]",
             (xmatrix + dxmatrix * 3.2, ymatrix - dymatrix / 3),
             fontsize=18,
             xycoords="axes fraction",
