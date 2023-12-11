@@ -12,6 +12,13 @@ from nannos.layers import is_anisotropic
 from .. import backend as bk
 
 
+def _allclose(a, b, tol=1e-12):
+    for _a, _b in zip(a.flatten(), b.flatten()):
+        if abs(_a - _b) > tol:
+            return False
+    return True
+
+
 def is_scalar(a):
     return len(a.shape) == 0 if hasattr(a, "shape") else _is_scalar(a)
 
@@ -38,7 +45,7 @@ def block_z_anisotropic(axx, axy, ayx, ayy, azz):
 def block(a):
     return bk.hstack(
         [
-            bk.array(bk.vstack([bk.array(a[j][i]) for i in range(len(a))]))
+            bk.array(bk.vstack([bk.array(a[i][j]) for i in range(len(a))]))
             for j in range(len(a))
         ]
     )
@@ -49,16 +56,26 @@ def is_z_anisotropic(a):
         return False
     zer = 0 * a[0, 0]
     return (
-        bk.allclose(a[0, 2], zer)
-        and bk.allclose(a[1, 2], zer)
-        and bk.allclose(a[2, 0], zer)
-        and bk.allclose(a[2, 1], zer)
+        _allclose(a[0, 2], zer)
+        and _allclose(a[1, 2], zer)
+        and _allclose(a[2, 0], zer)
+        and _allclose(a[2, 1], zer)
     )
 
 
 def is_symmetric(M):
-    return bk.allclose(M, M.T)
+    return _allclose(M, M.T)
 
 
 def is_hermitian(M):
-    return bk.allclose(M, bk.conj(M).T)
+    return _allclose(bk.conj(M), M.T)
+
+
+def invblock(A, B, C, D):
+    invA = bk.linalg.inv(A)
+    Q = bk.linalg.inv(D - C @ invA @ B)
+    Mxx = invA + invA @ B @ Q @ C @ invA
+    Mxy = -invA @ B @ Q
+    Myx = -Q @ C @ invA
+    Myy = Q
+    return block([[Mxx, Mxy], [Myx, Myy]])

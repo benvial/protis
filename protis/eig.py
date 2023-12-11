@@ -33,7 +33,9 @@ def _gen_eig_scipy(A, B, vectors=True):
                 out = scipy.linalg.eigvalsh(A / B)
             except scipy.linalg.LinAlgError:
                 out = scipy.linalg.eigvals(A / B)
-    elif vectors:
+
+        return out
+    if vectors:
         try:
             out = scipy.linalg.eigh(A, B)
         except scipy.linalg.LinAlgError:
@@ -47,12 +49,12 @@ def _gen_eig_scipy(A, B, vectors=True):
     return out
 
 
-def _gen_eig_scipy_sparse(A, B, vectors=True, neig=10, **kwargs):
+def _gen_eig_scipy_sparse(A, B, vectors=True, neig=10, shift=1e-12, **kwargs):
     return (
         scipy.sparse.linalg.eigsh(A / B, k=neig, return_eigenvectors=vectors, **kwargs)
         if is_scalar(B)
         else scipy.sparse.linalg.eigsh(
-            A, k=neig, M=B, return_eigenvectors=vectors, **kwargs
+            A, k=neig, M=B, return_eigenvectors=vectors, sigma=shift, **kwargs
         )
     )
 
@@ -83,6 +85,7 @@ def gen_eig(A, B, vectors=True, sparse=False, neig=10, **kwargs):
     # elif _backend == "torch" and sparse:
     #     # this works only for real matrices
     #     return _gen_eig_torch_sparse(A, B, vectors=vectors, neig=neig, **kwargs)
-
+    if _backend == "numpy":
+        return _gen_eig_scipy(A, B, vectors=vectors)
     C = A / B if is_scalar(B) else bk.linalg.solve(B, A)
     return eig(C, vectors=vectors, hermitian=is_hermitian(C))

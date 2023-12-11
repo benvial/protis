@@ -71,5 +71,6 @@ def print_info():
     print(f"Licence: {_data['License']}")
 
 
+from .bands import *
 from .simulation import *
 from .utils import *

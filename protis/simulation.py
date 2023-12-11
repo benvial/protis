@@ -108,6 +108,8 @@ class Simulation:
                     qyy = get_block(q, 1, 1, self.nh)
 
                     u = bk.linalg.inv(q)
+                    # u = bk.linalg.solve(q,bk.eye(u.shape[0]))
+
                     uxx = get_block(u, 0, 0, self.nh)
                     uxy = get_block(u, 0, 1, self.nh)
                     uyx = get_block(u, 1, 0, self.nh)
@@ -157,6 +159,7 @@ class Simulation:
         sparse=False,
         neig=10,
         ktol=1e-12,
+        reduced=False,
         **kwargs,
     ):
         self.build_A(polarization)
@@ -168,6 +171,8 @@ class Simulation:
             # reduced bloch mode expansion
             A = bk.conj(rbme.T) @ self.A @ rbme
             B = self.B if is_scalar(self.B) else bk.conj(rbme.T) @ self.B @ rbme
+            self.A_red = A
+            self.B_red = B
         eign = gen_eig(A, B, vectors=vectors, sparse=sparse, neig=neig, **kwargs)
         w = eign[0] if vectors else eign
         v = eign[1] if vectors else None
@@ -186,7 +191,7 @@ class Simulation:
         else:
             i = bk.argsort(bk.real(k0))
             self.eigenvalues = k0[i]
-        if rbme is not None and vectors:
+        if rbme is not None and vectors and not reduced:
             # retrieve full vectors
             v = rbme @ v @ bk.conj(rbme.T)
         self.eigenvectors = v[:, i] if vectors else None
@@ -312,6 +317,19 @@ class Simulation:
     def get_mode(self, imode):
         return self.coeff2mode(self.eigenvectors[:, imode])
 
+    def get_modes(self, imodes):
+        return bk.stack([self.get_mode(imode) for imode in imodes]).T
+
+    def scalar_product_real(self, u, v):
+        x, y = self.lattice.grid
+        return bk.trapz(bk.trapz(self.epsilon.conj() * u.conj() * v, x[:, 0]), y[0])
+
+    def scalar_product_fourier(self, u, v):
+        return (self.B @ u).conj() @ v.T
+
+    def scalar_product_rbme(self, u, v):
+        return (self.B_red @ u).conj() @ v.T
+
     def plot(
         self,
         field,
@@ -390,3 +408,44 @@ class Simulation:
             modes1.append(mode1)
         T = self._get_hom_tensor(mode0, modes1, polarization)
         return bk.real(T)
+
+    def get_berry_curvature(self, kx, ky, eigenmode, method="fourier"):
+        nkx = len(kx)
+        nky = len(ky)
+
+        if method == "fourier":
+            scalar_product = self.scalar_product_fourier
+        elif method == "real":
+            scalar_product = self.scalar_product_real
+        elif method == "rbme":
+            scalar_product = self.scalar_product_rbme
+        else:
+            raise ValueError(
+                f"Unknown method {method}: choose between 'fourier','real' or 'rbme'"
+            )
+
+        phi = bk.empty((nkx - 1, nky - 1), dtype=bk.float64)
+        for i in range(nkx - 1):
+            for j in range(nky - 1):
+                # print(i, j)
+                u1 = eigenmode[i, j + 1]
+                u2 = eigenmode[i + 1, j + 1]
+                u3 = eigenmode[i + 1, j]
+                u4 = eigenmode[i, j]
+                p1 = scalar_product(u1, u2)
+                p2 = scalar_product(u2, u3)
+                p3 = scalar_product(u3, u4)
+                p4 = scalar_product(u4, u1)
+                q = p1 * p2 * p3 * p4
+                phi[i, j] = -bk.log(q).imag
+
+        ds = (kx[1] - kx[0]) * (ky[1] - ky[0])
+        dkx = bk.array([kx[i + 1] - kx[i] for i in range(len(kx) - 1)])
+        dky = bk.array([ky[i + 1] - ky[i] for i in range(len(ky) - 1)])
+        return phi * dkx * dky
+
+    def get_chern_number(self, kx, ky, berry_curvature):
+        dkx = bk.array([kx[i + 1] - kx[i] for i in range(len(kx) - 1)])
+        dky = bk.array([ky[i + 1] - ky[i] for i in range(len(ky) - 1)])
+        C = -bk.sum(berry_curvature / (dkx * dky)) / (2 * bk.pi)
+        return C
