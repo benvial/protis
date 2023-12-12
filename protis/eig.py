@@ -49,12 +49,26 @@ def _gen_eig_scipy(A, B, vectors=True):
     return out
 
 
-def _gen_eig_scipy_sparse(A, B, vectors=True, neig=10, shift=1e-12, **kwargs):
+def _gen_eig_scipy_sparse(A, B, vectors=True, sigma=1e-12, neig=10, **kwargs):
+    sigma = 1j / sigma
     return (
-        scipy.sparse.linalg.eigsh(A / B, k=neig, return_eigenvectors=vectors, **kwargs)
+        scipy.sparse.linalg.eigs(
+            A / B,
+            k=neig,
+            return_eigenvectors=vectors,
+            sigma=sigma,
+            which="SR",
+            **kwargs
+        )
         if is_scalar(B)
-        else scipy.sparse.linalg.eigsh(
-            A, k=neig, M=B, return_eigenvectors=vectors, sigma=shift, **kwargs
+        else scipy.sparse.linalg.eigs(
+            A,
+            k=neig,
+            M=B,
+            return_eigenvectors=vectors,
+            sigma=sigma,
+            which="SR",
+            **kwargs
         )
     )
 
