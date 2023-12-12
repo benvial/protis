@@ -65,7 +65,7 @@ staging:
 
 container:
   stage: trigdocker
-  trigger: nannos/docker
+  trigger: protis/docker
   only:
     - tags
 
