@@ -55,7 +55,7 @@ badge:
       - badges.json
       - logobadge.json
   only:
-    - tags
+    - main
 
 staging:
   stage: trigdoc
