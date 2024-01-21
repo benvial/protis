@@ -26,7 +26,7 @@ class Simulation:
         if nh0 == 1:
             nh0 = 2
         # Get the harmonics
-        self.harmonics, self.nh = self.lattice.get_harmonics(nh0)
+        self.harmonics, self.nh = self.lattice.get_harmonics(nh0, sort=True)
         # Check if nh and resolution satisfy Nyquist criteria
         maxN = bk.max(self.harmonics)
         if self.lattice.discretization[0] <= 2 * maxN or (
@@ -108,7 +108,6 @@ class Simulation:
                     qyy = get_block(q, 1, 1, self.nh)
 
                     u = bk.linalg.inv(q)
-                    # u = bk.linalg.solve(q,bk.eye(u.shape[0]))
 
                     uxx = get_block(u, 0, 0, self.nh)
                     uxy = get_block(u, 0, 1, self.nh)
@@ -123,7 +122,6 @@ class Simulation:
                     A -= matmuldiag(self.Kx, kyuxy.T).T + matmuldiag(self.Ky, kxuyx.T).T
             else:
                 u = bk.linalg.inv(q)
-                # self.A = self.Kx @ u @ self.Kx + self.Ky @ u @ self.Ky
                 kxu = matmuldiag(self.Kx, u)
                 kyu = matmuldiag(self.Ky, u)
                 A = matmuldiag(self.Kx.T, kxu.T).T + matmuldiag(self.Ky.T, kyu.T).T
