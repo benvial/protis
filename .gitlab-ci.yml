@@ -61,7 +61,7 @@ staging:
   stage: trigdoc
   trigger: protis/protis.gitlab.io
   only:
-    - tags
+    - main
 
 container:
   stage: trigdocker

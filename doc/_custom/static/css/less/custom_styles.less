@@ -201,13 +201,16 @@ section.color-footer {
   color: @body-bg;
 }
 
-.footer a {
+.footer a, .footer a:visited {
   color: #d2d1d1;
   text-decoration: none;
 }
 
+
+
 .footer a:focus,
-.footer a:hover {
+.footer a:hover,
+.footer a:visited:hover {
   text-decoration: none;
   color: @body-bg;
 }
@@ -233,13 +236,16 @@ section.color-footer {
   text-align: center;
   padding-bottom: 20px;
   padding-top: 64px;
+  font-size: 150%;
 }
 
 .foot-fa a {
   padding-left: 10px;
   padding-right: 10px;
 }
-
+.foot-fa a:visited {
+  color: transparent;
+}
 /* .footer i {
     margin-left: 10px;
     font-size: 30px;
@@ -480,6 +486,9 @@ input {
   -o-transition: all 0.3s ease;
   transition: all 0.3s ease;
   z-index: 1;
+  padding-top: 5px;
+  text-align: center;
+  color: white;
 }
 
 #return-to-top i {
@@ -796,12 +805,12 @@ a.copybtn {
   float: none;
 }
 
-a {
+a , a:visited {
   color: @brand-secondary;
   transition: ease-in-out all 0.3s;
 }
 
-a:hover {
+a:hover,a:visited:hover {
   color: lighten(@brand-secondary, 15%);
   text-decoration: none;
   // text-decoration: underline lighten(@brand-secondary, 15%) 1px;
@@ -1056,4 +1065,29 @@ a.reference.download::before {
 
 .bd-header-article {
   margin-top: 40px;
+}
+
+.bd-header .navbar-nav>.current>.nav-link {
+  border-bottom: none;
+}
+
+nav.bd-links .current>a {
+  box-shadow: none;
+}
+
+#pst-back-to-top {
+  visibility: hidden;
+}
+
+.btn.btn-round:hover {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.btn.btn-round {
+  color: #ffffff9c;
+  border-color: #ffffff9c;
+}
+.bd-header .navbar-nav li a.nav-link:hover {
+  color: @brand-primary;
 }
