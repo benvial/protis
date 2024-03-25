@@ -7,3 +7,4 @@ dependencies:
   - pip
   - nannos>=2.6.0
   - scikit-image
+  - nlopt

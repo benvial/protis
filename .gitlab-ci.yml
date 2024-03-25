@@ -83,7 +83,7 @@ test-pip:
   extends: .tester
   image: condaforge/mambaforge:latest
   script:
-    - pip install -e .[all]
+    - pip install -e .[backends]
     - make test
 
 
@@ -92,7 +92,7 @@ test-conda:
   extends: .tester
   script:
     - mamba env update -n base -f environment.yml
-    - pip install -e .[all]
+    - pip install -e .[backends]
     - make test
     - coverage xml
   coverage: '/TOTAL.*\s([.\d]+)%/'
