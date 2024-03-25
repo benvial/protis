@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - pytorch
 dependencies:
-  - python>=3.10
+  - python>=3.9
   - pip
   - nannos>=2.6.0
   - scikit-image
