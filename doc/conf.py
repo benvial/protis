@@ -378,9 +378,9 @@ texinfo_documents = [
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/{.major}".format(sys.version_info), None),
-    "numpy": ("https://numpy.org/devdocs/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
-    "scipy": ("https://numpy.org/devdocs/", None),
+    "scipy": (" https://docs.scipy.org/doc/scipy", None),
     "shapely": ("https://shapely.readthedocs.io/en/stable/", None),
     "protis": ("https://protis.gitlab.io/", None),
 }
