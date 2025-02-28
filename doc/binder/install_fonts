@@ -7,12 +7,12 @@ mkdir -p ~/.fonts/
 mkdir -p fonts/
 cp $1/*.zip fonts
 cd fonts
-unzip Lato.zip && rm -rf Lato.zip && rm -rf *.txt
-unzip Cousine.zip && rm -rf Cousine.zip && rm -rf *.txt
-unzip Barlow.zip && rm -rf Barlow.zip && rm -rf *.txt
+unzip Cairo.zip && rm -rf Cairo.zip && rm -rf *.txt
+unzip Rosario.zip && rm -rf Rosario.zip && rm -rf *.txt
+unzip JetBrains_Mono.zip && rm -rf JetBrains_Mono.zip && rm -rf *.txt
 mv *.ttf ~/.fonts/
 cd .. && rm -rf fonts
 fc-cache -f -v | echo Continuing...
-fc-list | grep Lato
-fc-list | grep Cousine
-fc-list | grep Barlow
+fc-list | grep Cairo
+fc-list | grep Rosario
+fc-list | grep JetBrainsMono

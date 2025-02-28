@@ -2,17 +2,4 @@
 
 set -e
 
-# install fonts
-mkdir -p ~/.fonts/
-mkdir -p fonts/
-cp $1/*.zip fonts
-cd fonts
-unzip Lato.zip && rm -rf Cairo.zip && rm -rf *.txt
-unzip Cousine.zip && rm -rf Rosario.zip && rm -rf *.txt
-unzip Barlow.zip && rm -rf JetBrains_Mono.zip && rm -rf *.txt
-mv *.ttf ~/.fonts/
-cd .. && rm -rf fonts
-fc-cache -f -v | echo Continuing...
-fc-list | grep Cairo
-fc-list | grep Rosario
-fc-list | grep JetBrainsMono
+bash install_fonts .
