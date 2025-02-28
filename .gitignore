@@ -110,3 +110,7 @@ doc/biblio
 
 # include benchmarks results
 !examples/benchmarks/*/*.npz
+
+
+# include fonts
+!doc/_assets/*.zip
