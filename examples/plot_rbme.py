@@ -179,15 +179,15 @@ for nh in NH:
     BD_RBME2, t_rbme2, sim_rbme2 = rbme_model(bands, nh=nh, Nmodel=2, N_RBME=8)
     BD_RBME3, t_rbme3, sim_rbme3 = rbme_model(bands, nh=nh, Nmodel=3, N_RBME=8)
     actual_nh.append(sim_full.nh)
-    s2.append(t_rbme2 / t_full)
-    s3.append(t_rbme3 / t_full)
+    s2.append(t_full / t_rbme2)
+    s3.append(t_full / t_rbme3)
 
 
 plt.figure()
 plt.plot(actual_nh, s2, "o-", c="#e98b34", label="2-point RBME")
 plt.plot(actual_nh, s3, "s-", c="#56c291", label="3-point RBME")
 plt.xlabel(r"number of harmonics $n_h$")
-plt.ylabel(r"$s$")
+plt.ylabel(r"speedup")
 plt.legend()
 plt.tight_layout()
 
@@ -210,8 +210,8 @@ for nh in NH:
         BD_RBME2, t_rbme2, sim_rbme2 = rbme_model(bands, nh=nh, Nmodel=2, N_RBME=8)
         BD_RBME3, t_rbme3, sim_rbme3 = rbme_model(bands, nh=nh, Nmodel=3, N_RBME=8)
         actual_nh.append(sim_full.nh)
-        s2.append(t_rbme2 / t_full)
-        s3.append(t_rbme3 / t_full)
+        s2.append(t_full / t_rbme2)
+        s3.append(t_full / t_rbme3)
     result[nh] = dict(s2=s2, s3=s3, actual_nh=actual_nh)
 
 
@@ -245,7 +245,6 @@ plt.plot(
     label=rf"3-point RBME, $nh={result[NH[1]]['actual_nh'][0]}$",
 )
 plt.xlabel(r"number of k points $n_k$")
-plt.ylabel(r"$s$")
+plt.ylabel(r"speedup")
 plt.legend()
-plt.yscale("log")
 plt.tight_layout()

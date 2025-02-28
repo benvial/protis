@@ -59,7 +59,7 @@ X = (pi / a, 0)
 M = (pi / a, pi / a)
 sym_points = [Gamma, X, M, Gamma]
 
-Nb = 31
+Nb = 51
 kpath = pt.init_bands(sym_points, Nb)
 
 ##############################################################################
@@ -95,7 +95,7 @@ plt.figure()
 pt.plot_bands(sym_points, Nb, ev_band0, color="#8041b0", xtickslabels=labels)
 plt.ylim(0, 1.2)
 plt.ylabel(r"Frequency $\omega a/2\pi c$")
-plt.title("without magnetic ﬁeld")
+plt.title("without magnetic field")
 plt.tight_layout()
 
 ##############################################################################
@@ -105,7 +105,7 @@ plt.figure()
 pt.plot_bands(sym_points, Nb, ev_band, color="#8041b0", xtickslabels=labels)
 plt.ylim(0, 1.2)
 plt.ylabel(r"Frequency $\omega a/2\pi c$")
-plt.title("with applied magnetic ﬁeld")
+plt.title("with applied magnetic field")
 plt.tight_layout()
 
 ##############################################################################
