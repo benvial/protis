@@ -119,7 +119,7 @@ t = -time.time()
 method = "fourier"
 
 n_eig = 3
-nk = 31
+nk = 51
 kx = ky = bk.linspace(0, 2 * pi / a, nk)
 Kx, Ky = bk.meshgrid(kx, ky)
 
