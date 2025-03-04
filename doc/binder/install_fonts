@@ -9,10 +9,10 @@ cp $1/*.zip fonts
 cd fonts
 unzip Cairo.zip && rm -rf Cairo.zip && rm -rf *.txt
 unzip Rosario.zip && rm -rf Rosario.zip && rm -rf *.txt
-unzip JetBrains_Mono.zip && rm -rf JetBrains_Mono.zip && rm -rf *.txt
+unzip Fira_Mono.zip && rm -rf Fira_Mono.zip && rm -rf *.txt
 mv *.ttf ~/.fonts/
 cd .. && rm -rf fonts
 fc-cache -f -v | echo Continuing...
 fc-list | grep Cairo
 fc-list | grep Rosario
-fc-list | grep JetBrainsMono
+fc-list | grep Fira Mono
