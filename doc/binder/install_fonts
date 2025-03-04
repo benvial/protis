@@ -15,4 +15,4 @@ cd .. && rm -rf fonts
 fc-cache -f -v | echo Continuing...
 fc-list | grep Cairo
 fc-list | grep Rosario
-fc-list | grep Fira Mono
+fc-list | grep "Fira Mono"
