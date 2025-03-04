@@ -59,12 +59,12 @@ def postpro_download_links(fn):
     sgfoot = None
     with open(fn, "r") as file:
         soup = BeautifulSoup(file, "html.parser")
-    for item in soup.findAll(["div"]):
+    for item in soup.find_all   (["div"]):
         if item.get("class") is not None and "sphx-glr-footer" in item.get("class"):
             sgfoot = item
 
     if sgfoot is not None:
-        for item in soup.findAll(["div"]):
+        for item in soup.find_all(["div"]):
             if item.get("class") is not None and "d-none" in item.get("class"):
                 item.insert(0, sgfoot)
     with open(fn, "w") as file:
@@ -75,8 +75,8 @@ def process_html(fn, lines):
     new_lines = []
     for line in lines:
         # Remove escaped arguments from the html files.
-        line = line.replace("\*args", "*args")
-        line = line.replace("\*\*kwargs", "**kwargs")
+        line = line.replace(r"\*args", "*args")
+        line = line.replace(r"\*\*kwargs", "**kwargs")
         line = line.replace("col-md-3", "col-md-2")
         line = line.replace(
             "<title> &#8212;",
