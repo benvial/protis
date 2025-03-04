@@ -244,9 +244,7 @@ for ikx, kx in enumerate(Kx):
                 dphi2 = modes[ikx, iky + 1, jmode] - modes[ikx, iky, jmode]
                 dphi2 /= Ky[iky + 1] - Ky[iky]
                 norma = inner(phi1, dphi2, coeff, x, y)
-                M[iky, imode, jmode] = (
-                    1j * inner(phi1, dphi2, coeff, x, y) / norma**0.5
-                )
+                M[iky, imode, jmode] = 1j * inner(phi1, dphi2, coeff, x, y) / norma**0.5
     Ms.append(M)
 
 Ms = np.array(Ms)

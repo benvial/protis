@@ -394,8 +394,8 @@ sphinx_gallery_conf = {
     # directory where function granular galleries are stored
     "backreferences_dir": "generated/backreferences",
     "remove_config_comments": True,
-    "filename_pattern": "/plot_",
-    "ignore_pattern": r"^((?!/plot_).)*$",  # ignore files that do not start with plot_
+    # "filename_pattern": "/plot_",
+    # "ignore_pattern": r"^((?!/plot_).)*$",  # ignore files that do not start with plot_
     # "ignore_pattern": r"__init__\.py",
     "reference_url": {
         "sphinx_gallery": None,

@@ -59,7 +59,7 @@ def postpro_download_links(fn):
     sgfoot = None
     with open(fn, "r") as file:
         soup = BeautifulSoup(file, "html.parser")
-    for item in soup.find_all   (["div"]):
+    for item in soup.find_all(["div"]):
         if item.get("class") is not None and "sphx-glr-footer" in item.get("class"):
             sgfoot = item
 
