@@ -2,7 +2,6 @@
 
 .. only:: html
 
-  ============
   Bibliography
   ============
 

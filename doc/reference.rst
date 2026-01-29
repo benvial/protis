@@ -1,7 +1,6 @@
 
 
 
-=============
 Documentation
 =============
 
@@ -32,7 +31,7 @@ of Photonic crystals using the Plane Wave Expansion Method (PWEM).
 The code of the project is `on Gitlab <https://gitlab.com/protis/protis>`_
 
 Features
-========
+--------
 
 * Automatic differentiation.
 * GPU acceleration.
@@ -44,5 +43,8 @@ Features
 
    installation
    api
+   cite
    biblio
    license
+
+  

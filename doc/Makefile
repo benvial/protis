@@ -62,6 +62,7 @@ clean:
 	@rm -rf tutorials/
 	@rm -rf gen_modules/
 	@rm -rf generated/
+	@rm -rf autoapi/
 
 ## Postprocess html doc
 postpro-html:

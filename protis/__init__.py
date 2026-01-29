@@ -5,11 +5,13 @@
 # License: GPLv3
 # See the documentation at protis.gitlab.io
 
+"""This module implements the protis API."""
+
 import os
+
 
 from .__about__ import __author__, __description__, __version__
 from .__about__ import data as _data
-
 
 def _reload_package():
     import importlib
@@ -30,6 +32,8 @@ if _nannos_env_var is not None:
 import nannos
 from nannos import *
 
+# from nannos import backend, get_block
+
 del PlaneWave
 del excitation
 del print_info
@@ -41,6 +45,18 @@ del layers
 
 
 def set_backend(backend):
+    """
+    Set the numerical backend used by protis.
+
+    Parameters
+    ----------
+    backend : str
+        The backend to use. Must be one of "numpy", "scipy", "autograd", "jax" or "torch".
+
+    Notes
+    -----
+    This function is a wrapper around nannos.set_backend and also reloads the protis package.
+    """
     global _FORCE_BACKEND
     _FORCE_BACKEND = 1
     nannos.set_backend(backend)
@@ -48,6 +64,21 @@ def set_backend(backend):
 
 
 def use_gpu(boolean):
+    
+    """
+    Enable or disable GPU usage for computations.
+
+    Parameters
+    ----------
+    boolean : bool
+        If True, set the system to use GPU for computations; if False, use CPU.
+
+    Notes
+    -----
+    This function sets the GPU usage state for the current session and reloads
+    the package to apply the changes.
+    """
+    
     nannos.use_gpu(boolean)
     _reload_package()
 
@@ -74,3 +105,10 @@ def print_info():
 from .bands import *
 from .simulation import *
 from .utils import *
+
+
+# class Lattice(nannos.Lattice):
+#     pass
+
+
+# __all__ = ["Simulation", "Lattice"]

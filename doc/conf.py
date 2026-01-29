@@ -52,6 +52,7 @@ extensions = [
     "jupyter_sphinx",
     "sphinxcontrib.jquery",
     "sphinx_thebe",
+    "autoapi.extension",
 ]
 
 thebe_config = {
@@ -60,6 +61,36 @@ thebe_config = {
     "repository_url": "https://github.com/benvial/protis.gitlab.io",
     "repository_branch": "doc",
 }
+
+
+# -- autoapi configuration ---------------------------------------------------
+
+autodoc_typehints = "signature"  # autoapi respects this
+
+autoapi_type = "python"
+autoapi_dirs = ["../protis"]
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "show-inheritance",
+    "show-module-summary",
+    "imported-members",
+]
+autoapi_add_toctree_entry = False
+# autoapi_python_use_implicit_namespaces = True
+autoapi_keep_files = True
+# autoapi_generate_api_docs = False
+
+# autoapi_include = {
+#     "nannos": ["Lattice"],  # Explicitly include Lattice
+# }
+
+def skip_member(app, what, name, obj, skip, options):  # noqa: ARG001
+    # skip submodules / subpackages
+    # print(what, name)
+    if what in ["module", "package"] and name not in ["nannos", package.__name__]:
+        skip = True
+    return skip
 
 
 # a simple label style which uses the bibtex keys for labels
@@ -181,6 +212,7 @@ def env_get_outdated(app, env, added, changed, removed):
 
 
 def setup(app):
+    app.connect("autoapi-skip-member", skip_member)
     app.connect("env-get-outdated", env_get_outdated)
     app.add_css_file("css/custom_styles.css")
     app.add_css_file("css/custom_gallery.css")
@@ -200,6 +232,8 @@ html_theme_options = {
     "show_prev_next": False,
     "show_nav_level": 2,
     "navbar_end": ["navbar-icon-links"],
+    "announcement": "",
+    "show_version_warning_banner": False,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

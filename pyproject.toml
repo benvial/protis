@@ -1,3 +1,62 @@
 [build-system]
 requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "protis"
+version = "1.0.0"
+authors = [
+    { name = "Benjamin Vial", email = "benjamin.vial84@gmail.com" },
+]
+description = "Plane Wave Expansion method for photonic crystals"
+readme = { file = "README.rst", content-type = "text/x-rst" }
+license = "GPL-3.0-or-later"
+requires-python = ">=3.6"
+keywords = [
+    "plane wave expansion",
+    "photonic crystals",
+    "metamaterials",
+    "band diagram",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Utilities",
+]
+
+dependencies = [
+    "nannos >= 2.6.3",
+    "scikit-image",
+    "pyvista[jupyter]",
+]
+
+[project.optional-dependencies]
+backends = ["torch", "jax", "jaxlib"]
+gpu = ["jax[cuda13]"]
+magma = ["scikit-cuda"]
+opt = ["nlopt"]
+all = [
+    "protis[backends]",
+    "protis[gpu]",
+    "protis[magma]",
+    "protis[opt]",
+]
+
+[project.urls]
+Homepage = "https://gitlab.com/protis/protis"
+Code = "https://gitlab.com/protis/protis"
+Documentation = "https://protis.gitlab.io"
+Issues = "https://gitlab.com/protis/protis/issues"
+
+
+[tool.setuptools]
+packages = { find = {} }

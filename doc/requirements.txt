@@ -13,3 +13,4 @@ pythreejs
 ipyvtklink
 sphinx-thebe
 sphinxcontrib-jquery
+sphinx-autoapi

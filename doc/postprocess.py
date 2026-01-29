@@ -48,11 +48,11 @@ def main():
         f.write("".join(lines))
         f.close()
 
-        try:
-            if mode == "html":
-                postpro_download_links(fn)
-        finally:
-            pass
+        # try:
+        #     if mode == "html":
+        #         postpro_download_links(fn)
+        # finally:
+        #     pass
 
 
 def postpro_download_links(fn):

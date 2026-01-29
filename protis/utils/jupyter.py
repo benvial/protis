@@ -7,13 +7,12 @@
 
 all = ["local_hardware_info", "VersionTable"]
 
-import distutils.core
+import importlib.metadata as metadata
 import os
 import platform
 import sys
 import time
 
-import pkg_resources
 import psutil
 from IPython.core.magic import Magics, line_magic, magics_class
 from IPython.display import HTML, display

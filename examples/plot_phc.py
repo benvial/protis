@@ -71,7 +71,7 @@ BD["TE"] = pt.backend.stack(BD["TE"]).real
 ##############################################################################
 # Plot the bands:
 
-labels = ["$\Gamma$", "$X$", "$M$", "$\Gamma$"]
+labels = [r"$\Gamma$", r"$X$", "$M$", r"$\Gamma$"]
 
 
 plt.figure()
