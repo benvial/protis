@@ -9,9 +9,9 @@
 
 import os
 
-
 from .__about__ import __author__, __description__, __version__
 from .__about__ import data as _data
+
 
 def _reload_package():
     import importlib
@@ -64,7 +64,6 @@ def set_backend(backend):
 
 
 def use_gpu(boolean):
-    
     """
     Enable or disable GPU usage for computations.
 
@@ -78,7 +77,7 @@ def use_gpu(boolean):
     This function sets the GPU usage state for the current session and reloads
     the package to apply the changes.
     """
-    
+
     nannos.use_gpu(boolean)
     _reload_package()
 
@@ -105,7 +104,6 @@ def print_info():
 from .bands import *
 from .simulation import *
 from .utils import *
-
 
 # class Lattice(nannos.Lattice):
 #     pass

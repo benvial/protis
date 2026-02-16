@@ -34,7 +34,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "nannos >= 2.6.3",
+    "nannos >= 2.6.4",
     "scikit-image",
     "pyvista[jupyter]",
 ]

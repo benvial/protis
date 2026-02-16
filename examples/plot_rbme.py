@@ -13,7 +13,6 @@ Reduced Bloch mode expansion
 Calculation of the band diagram of a two-dimensional photonic crystal.
 """
 
-
 import matplotlib.pyplot as plt
 import numpy as np
 

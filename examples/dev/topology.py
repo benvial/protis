@@ -14,7 +14,6 @@ Calculating topological invariants
 yttrium-iron-garnet (YIG) rods for transverse-magnetic modes.
 """
 
-
 import matplotlib.pyplot as plt
 import numpy as np
 

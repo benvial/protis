@@ -13,7 +13,6 @@ Topological invariants
 Calculation of Berry phase and Chern number for a magneto-optical photonic crystal.
 """
 
-
 import time
 
 import matplotlib.pyplot as plt
