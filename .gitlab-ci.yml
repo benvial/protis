@@ -85,8 +85,9 @@ test-pip:
   before_script: 
     - !reference [.install-os-tools, script]
     - !reference [.setup-Xvfb, script]
-  script:
+    - make test-req
     - pip install -e .[backends]
+  script:
     - make test
 
 
