@@ -24,7 +24,7 @@ def test_nometadata():
 def test_data():
     import protis
 
-    protis.__about__.get_meta(None)
+    protis.__about__._get_metadata(None)
 
 
 def test_info():

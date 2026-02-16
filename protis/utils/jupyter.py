@@ -13,11 +13,10 @@ import platform
 import sys
 import time
 
+import nannos
 import psutil
 from IPython.core.magic import Magics, line_magic, magics_class
 from IPython.display import HTML, display
-
-import protis
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -56,10 +55,9 @@ class VersionTable(Magics):
 
         packages = []
 
-        packages_names = ["nannos", "numpy", "scipy", "autograd", "jax", "torch"]
-
-        for pkg in packages_names:
-            ver = pkg_resources.get_distribution(pkg).version
+        for pkg in ["protis"] + nannos.available_backends:
+            ver = metadata.version(pkg)
+            packages.append((f"<code>{pkg}</code>", ver))
 
             packages.append((f"<code>{pkg}</code>", ver))
 
