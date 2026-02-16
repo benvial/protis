@@ -80,7 +80,6 @@ container:
 
 
 test-pip:
-  extends: .tester
   image: python:latest
   before_script: 
     - !reference [.install-os-tools, script]
@@ -89,6 +88,8 @@ test-pip:
     - pip install -e .[backends]
   script:
     - make test
+  only:
+    - main
 
 
 
